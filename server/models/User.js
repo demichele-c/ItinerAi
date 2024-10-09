@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -16,20 +15,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  itineraries: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Itinerary',
+    },
+  ],
 });
 
-// Hash the user's password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
+// Default empty array for itineraries
+userSchema.pre('save', function (next) {
+  if (!this.itineraries) {
+    this.itineraries = [];
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-userSchema.methods.isCorrectPassword = async function (password) {
-  return bcrypt.compare(password, this.password);
-};
-
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User;
