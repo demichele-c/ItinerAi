@@ -1,5 +1,6 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import UserInputForm from '../components/UserInputForm';  // Import the form
 
 const Home = () => {
   return (
@@ -11,16 +12,13 @@ const Home = () => {
         <Typography variant="h5" component="p" sx={{ mb: 4 }}>
           Plan your perfect date night effortlessly.
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          component={Link}
-          to="/itineraries"
-          sx={{ padding: '12px 24px', fontSize: '18px' }}
-        >
-          Get Started
-        </Button>
+   
+        
+
+        {/* Render UserInputForm */}
+        <Box sx={{ mt: 4 }}>
+          <UserInputForm />
+        </Box>
       </Box>
     </Container>
   );
