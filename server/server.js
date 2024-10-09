@@ -11,8 +11,7 @@ dotenv.config();
 const typeDefs = require('./schemas/typeDefs');
 const resolvers = require('./schemas/resolvers');
 
-console.log(typeDefs);
-console.log(resolvers);
+
 
 
 // Initialize Express app
