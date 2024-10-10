@@ -3,6 +3,7 @@ const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const api = require('./routes/index.js');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -11,12 +12,14 @@ dotenv.config();
 const typeDefs = require('./schemas/typeDefs');
 const resolvers = require('./schemas/resolvers');
 
-
-
-
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Express middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use('/api', api);
 
 // Apollo Server setup
 async function startServer() {
@@ -32,13 +35,14 @@ async function startServer() {
     await server.start();
     server.applyMiddleware({ app });
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/itinerai')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => {
-    console.error('Error connecting to MongoDB:', err.message);
-    mongoose.connection.close();
-  });
+    // MongoDB connection
+    mongoose
+      .connect('mongodb://localhost:27017/itinerai')
+      .then(() => console.log('Connected to MongoDB'))
+      .catch((err) => {
+        console.error('Error connecting to MongoDB:', err.message);
+        mongoose.connection.close();
+      });
 
     // Start the Express server
     app.listen(PORT, () => {
