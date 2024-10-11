@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
 // Import ChatGPT Router
-const chatGPTRoutes = require('./chatGPT');
+const openAIRoutes = require('./openAI.js');
 
-router.use('/chatGPT', chatGPTRoutes);
+router.use('/openAI', openAIRoutes);
 
 module.exports = router;
