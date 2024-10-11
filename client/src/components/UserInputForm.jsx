@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { TextField, Button, Box, MenuItem } from '@mui/material';
+import { TextField, Button, Box, MenuItem, Slider, Typography } from '@mui/material';
+
+// Function to convert slider value to time in 12-hour format
+const formatTime = (value) => {
+  const hour = value % 24;
+  const isAM = hour < 12 || hour === 24;
+  const formattedHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const suffix = isAM ? 'AM' : 'PM';
+  return `${formattedHour}:00 ${suffix}`;
+};
 
 const UserInputForm = () => {
   const [location, setLocation] = useState('');
@@ -7,6 +16,7 @@ const UserInputForm = () => {
   const [celebration, setCelebration] = useState('');
   const [interests, setInterests] = useState('');
   const [foodPreferences, setFoodPreferences] = useState('');
+  const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,7 +24,12 @@ const UserInputForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}
+    >
+      {/* Location Dropdown */}
       <TextField
         label="Location"
         value={location}
@@ -22,7 +37,15 @@ const UserInputForm = () => {
         fullWidth
         margin="normal"
         variant="outlined"
-      />
+        select
+      >
+        <MenuItem value="Philadelphia">Philadelphia</MenuItem>
+        <MenuItem value="Waukesha">Waukesha</MenuItem>
+        <MenuItem value="Port St. Lucie">Port St. Lucie</MenuItem>
+        <MenuItem value="San Antonio">San Antonio</MenuItem>
+      </TextField>
+
+      {/* Date Picker */}
       <TextField
         label="Date"
         type="date"
@@ -35,6 +58,8 @@ const UserInputForm = () => {
         }}
         variant="outlined"
       />
+
+      {/* Celebration Dropdown */}
       <TextField
         label="Celebration"
         value={celebration}
@@ -42,7 +67,16 @@ const UserInputForm = () => {
         fullWidth
         margin="normal"
         variant="outlined"
-      />
+        select
+      >
+        <MenuItem value="Birthday">Birthday</MenuItem>
+        <MenuItem value="Anniversary">Anniversary</MenuItem>
+        <MenuItem value="Engagement">Engagement</MenuItem>
+        <MenuItem value="Just Because">Just Because</MenuItem>
+        <MenuItem value="First Date">First Date</MenuItem>
+      </TextField>
+
+      {/* Interests Dropdown */}
       <TextField
         label="Interests"
         value={interests}
@@ -50,7 +84,16 @@ const UserInputForm = () => {
         fullWidth
         margin="normal"
         variant="outlined"
-      />
+        select
+      >
+        <MenuItem value="Art">Art</MenuItem>
+        <MenuItem value="Music">Music</MenuItem>
+        <MenuItem value="Sports">Sports</MenuItem>
+        <MenuItem value="Nature">Nature</MenuItem>
+        <MenuItem value="Food">Food</MenuItem>
+      </TextField>
+
+      {/* Food Preferences Dropdown */}
       <TextField
         label="Food Preferences"
         value={foodPreferences}
@@ -61,15 +104,40 @@ const UserInputForm = () => {
         select
       >
         <MenuItem value="Vegan">Vegan</MenuItem>
-        <MenuItem value="Vegetarian">Vegetarian</MenuItem>
+        <MenuItem value="Indian">Indian</MenuItem>
         <MenuItem value="Seafood">Seafood</MenuItem>
         <MenuItem value="Steakhouse">Steakhouse</MenuItem>
+        <MenuItem value="Italian">Italian</MenuItem>
       </TextField>
-      <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
+
+      {/* Time Range Slider */}
+      <Typography gutterBottom>Date Time Frame</Typography>
+      <Slider
+        value={timeRange}
+        onChange={(e, newValue) => setTimeRange(newValue)}
+        valueLabelDisplay="auto"
+        min={0}
+        max={24}
+        step={1}
+        marks
+        valueLabelFormat={formatTime}
+      />
+      <Typography>
+        From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
+      </Typography>
+
+      {/* Submit Button */}
+      <Button
+        variant="contained"
+        color="primary"
+        type="submit"
+        fullWidth
+        sx={{ mt: 3 }}
+      >
         Generate Itinerary
       </Button>
     </Box>
   );
 };
 
-export default UserInputForm;  // Ensure the component is exported
+export default UserInputForm;
