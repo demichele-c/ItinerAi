@@ -37,12 +37,24 @@ async function startServer() {
 
     // MongoDB connection
     mongoose
-      .connect('mongodb://localhost:27017/itinerai')
+      .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/itinerai', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
       .then(() => console.log('Connected to MongoDB'))
       .catch((err) => {
         console.error('Error connecting to MongoDB:', err.message);
         mongoose.connection.close();
       });
+
+    // Serve the static files from the Vite frontend dist directory
+    if (process.env.NODE_ENV === 'production') {
+      app.use(express.static(path.join(__dirname, '../client/dist')));
+
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+      });
+    }
 
     // Start the Express server
     app.listen(PORT, () => {
