@@ -2,9 +2,11 @@
   "name": "itinerai",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node server/server.js",
     "server": "cd server && npm start",
-    "client": "cd client && npm start"
+    "client": "cd client && npm start",
+    "install": "cd server && npm i && cd ../client && npm i",
+    "dev": "concurrently \"cd server && npm run server\" \"cd client && npm run client\""
   },
   "devDependencies": {
     "concurrently": "^6.0.0"
