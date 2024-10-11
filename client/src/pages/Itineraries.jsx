@@ -1,5 +1,5 @@
 // Import Axiox to make API calls (data retrieval)
-//import axios from 'axios';
+import axios from 'axios';
 
 // Import React Hooks
 import { useState, useEffect } from 'react';
@@ -8,10 +8,11 @@ import { useLocation } from 'react-router-dom';
 // Import component for rendering itinerary list
 import ItineraryList from '../components/ItineraryList';
 
+// Import Material-UI components
 import { CircularProgress } from '@mui/material';
 
 const Itineraries = () => {
-  // Conditional For Loading Page Spinner
+  // Initialize state variables
   const [isLoading, setIsLoading] = useState(true);
   const [itineraries, setItineraries] = useState([]);
 
@@ -19,20 +20,35 @@ const Itineraries = () => {
   const location = useLocation();
   const formParams = location.state || {};
 
-  console.log(formParams.location, formParams.date, formParams.celebration, formParams.interests, formParams.foodPreferences);
-  const itLocaton = formParams.location;
-  const itDate = formParams.date;
-  const itCelebration = formParams.celebration;
-  const itInterests = formParams.interests;
-  const itFoodPreferences = formParams.foodPreferences;
+  // Create variables to store the form parameters
+  const itLocation = formParams.location;
+  // const itDate = formParams.date;
+  // const itCelebration = formParams.celebration;
+  // const itInterests = formParams.interests;
+  // const itFoodPreferences = formParams.foodPreferences;
 
+  // useEffect hook to make API call when component is mounted
+  useEffect(() => {
+    const fetchItineraries = async () => {
+      const { data } = await axios.get('/api/openAI/', { params: { location: itLocation } });
+      setItineraries(data);
+    };
+
+    fetchItineraries();
+    setIsLoading(false);
+    console.log(itineraries);
+  }, [itLocation, itineraries]);
+
+  // If isLoadign is true, display spinner while waiting for data
   if (isLoading) {
     return (
       <>
         <CircularProgress size={50} />
       </>
     );
-  } else {
+  }
+  // Data has been retrieved, display the itinerary list
+  else {
     return (
       <div>
         <ItineraryList />

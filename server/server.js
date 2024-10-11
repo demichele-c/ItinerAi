@@ -3,30 +3,40 @@ const { ApolloServer } = require('apollo-server-express');
 // const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-const api = require('./routes/index.js');
+
+// Import ApolloServer and middleware
 const { expressMiddleware } = require('@apollo/server');
-const { authMiddleware } = require('./utils/auth.js')
+const { authMiddleware } = require('./utils/auth.js');
 
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
 
-
 const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
-  typeDefs, 
+  typeDefs,
   resolvers,
 });
 
+// 3rd Party API Routes - Please Don't Remove
+const api = require('./routes/index.js');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use('/api', api);
+
+// Apollo Server setup
 const startApolloServer = async () => {
   await server.start();
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  app.use('/graphql', expressMiddleware(server, {
-    context: authMiddleware
-  }));
+  app.use(
+    '/graphql',
+    expressMiddleware(server, {
+      context: authMiddleware,
+    })
+  );
 
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -44,6 +54,7 @@ const startApolloServer = async () => {
   });
 };
 
+// Start Apollo Server
 startApolloServer();
 
 // Load environment variables from .env file

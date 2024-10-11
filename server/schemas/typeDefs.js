@@ -34,6 +34,9 @@ const typeDefs = gql`
   type Mutation {
     addUser(name: String!, email: String!): User
     addItinerary(description: String!, date: String!, location: String!): Itinerary
+
+    // Was getting an error starting the server, so I added the following mutation. I do not know if it is correct.
+    addProfile(name: String!, email: String!, password: String!): Auth
   }
 `;
 
