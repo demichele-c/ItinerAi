@@ -9,6 +9,11 @@ const typeDefs = gql`
     email: String!
   }
 
+  type Auth {
+    token: ID!
+    user: User
+  }
+    
   # Define the Itinerary type
   type Itinerary {
     id: ID!
