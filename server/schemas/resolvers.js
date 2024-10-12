@@ -22,25 +22,25 @@ const resolvers = {
   },
 
   Mutation: {
-    // Register a profile 
+    // Register a profile
     addProfile: async (parent, { name, email, password }) => {
       // create profile
       const profile = await Profile.create({ name, email, password });
       // Make a token
       const token = signToken(profile);
 
-      // Send token back to the front end 
+      // Send token back to the front end
       return { token, profile };
-    }, 
+    },
 
-    // The purpose of login is to verify that the user is logged in correctly 
+    // The purpose of login is to verify that the user is logged in correctly
     login: async (parent, { email, password }) => {
-      // Try to find the email in the profile list 
+      // Try to find the email in the profile list
       const profile = await Profile.findOne({ email });
 
       // if there is no profile throw custom made error
       if (!profile) {
-        throw AuthenticateError
+        throw AuthenticateError;
       }
 
       // If we find profile then we will compare the password to make sure it is correct
@@ -48,17 +48,17 @@ const resolvers = {
 
       // if password is not correct throw custom made error
       if (!correctPw) {
-        throw AuthenticateError
+        throw AuthenticateError;
       }
 
       // passing email, name, and id from profile
       // creating the token
       const token = signToken(profile);
-       
+
       // return the token and the profile that was found
       // We are allowing the user to have a token
-      return { token, profile}; 
-    }, 
+      return { token, profile };
+    },
 
     // Add a new user
     // addUser: async (parent, { name, email, password }) => {
