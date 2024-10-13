@@ -8,19 +8,15 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
-
       '/graphql': {
         target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
       },
-=======
-      '/api': 'http://localhost:3001',
     },
     build: {
       outDir: 'dist', // Output directory for the build
       sourcemap: true, // Generate source maps for easier debugging
-
     },
   },
 });
