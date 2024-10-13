@@ -13,7 +13,7 @@ const typeDefs = gql`
     token: ID!
     user: User
   }
-    
+
   # Define the Itinerary type
   type Itinerary {
     id: ID!
@@ -35,8 +35,9 @@ const typeDefs = gql`
     addUser(name: String!, email: String!): User
     addItinerary(description: String!, date: String!, location: String!): Itinerary
 
-    // Was getting an error starting the server, so I added the following mutation. I do not know if it is correct.
-    addProfile(name: String!, email: String!, password: String!): Auth
+    # Was getting an error starting the server, so I added the following mutation. I do not know if it is correct.
+    addProfile(name: String!, email: String!, password: String!): User
+    login(email: String!, password: String!): User
   }
 `;
 

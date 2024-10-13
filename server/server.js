@@ -1,11 +1,12 @@
+//const axios = require('axios');
 const express = require('express');
+
+// @apollo/server not needed as it is included in apollo-server-express
 const { ApolloServer } = require('apollo-server-express');
-// const mongoose = require('mongoose');
+
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Import ApolloServer and middleware
-const { expressMiddleware } = require('@apollo/server');
 const { authMiddleware } = require('./utils/auth.js');
 
 const { typeDefs, resolvers } = require('./schemas');
@@ -13,38 +14,49 @@ const db = require('./config/connection');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+const server = new ApolloServer({ typeDefs, resolvers });
 
-// 3rd Party API Routes - Please Don't Remove
-const api = require('./routes/index.js');
-app.use(express.urlencoded({ extended: true }));
+// Establish Express Middleware
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use('/api', api);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+}
 
 // Apollo Server setup
-const startApolloServer = async () => {
+const startApolloServer = async (typeDefs, resolvers) => {
   await server.start();
 
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
+  // applyMiddleware method connects apollo server to express
+  // allows us to use RESTful API alongside GraphQL API
+  // default path is /graphql
+  server.applyMiddleware({ app });
 
-  app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: authMiddleware,
-    })
-  );
+  // Use GraphQL For RESTFUL API
+  app.get('/openAi', async (req, res) => {
+    res.json({ message: 'This Will Connect To The openAi API!' });
+    // const response = await axios.post(
+    //   'https://api.openai.com/v1/engines/text-davinci-003/completions',
+    //   {
+    //     prompt: 'Itinerary_Prompt_Goes_Here',
+    //     max_tokens: 333,
+    //     temperature: 0.5,
+    //     n: 1,
+    //   },
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer YOUR_API_KEY`,
+    //     },
+    //   }
+    // );
+    // res.json(response.data);
+  });
 
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
-
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
-    });
-  }
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+  });
 
   db.once('open', () => {
     app.listen(PORT, () => {
@@ -55,53 +67,4 @@ const startApolloServer = async () => {
 };
 
 // Start Apollo Server
-startApolloServer();
-
-// Load environment variables from .env file
-// dotenv.config();
-
-// // Import typeDefs and resolvers
-// const typeDefs = require('./schemas/typeDefs');
-// const resolvers = require('./schemas/resolvers');
-
-// Initialize Express app
-
-// Express middleware
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-// app.use('/api', api);
-
-// // Apollo Server setup
-// async function startServer() {
-//   try {
-//     const server = new ApolloServer({
-//       typeDefs,
-//       resolvers,
-//       context: ({ req }) => {
-//         // Authentication logic can go here
-//       },
-//     });
-
-//     await server.start();
-//     server.applyMiddleware({ app });
-
-//     // MongoDB connection
-//     mongoose
-//       .connect('mongodb://localhost:27017/itinerai')
-//       .then(() => console.log('Connected to MongoDB'))
-//       .catch((err) => {
-//         console.error('Error connecting to MongoDB:', err.message);
-//         mongoose.connection.close();
-//       });
-
-//     // Start the Express server
-//     app.listen(PORT, () => {
-//       console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-//     });
-//   } catch (error) {
-//     console.error('Error starting server:', error);
-//   }
-// }
-
-// // Start Apollo and Express server
-// startServer();
+startApolloServer(typeDefs, resolvers);
