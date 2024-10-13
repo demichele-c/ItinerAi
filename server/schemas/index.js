@@ -1,3 +1,6 @@
+const typeDefs = require('./typeDefs');
+const resolvers = require('./resolvers');
+
 module.exports = {
-  message: "Schemas loaded successfully!"
+  typeDefs, resolvers
 };
