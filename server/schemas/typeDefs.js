@@ -31,9 +31,12 @@ const typeDefs = gql`
   }
 
   # Define the Mutation type
+  # Missing addProfile and Login Mutations Was Causing Error, Please verify that the mutations are correct
   type Mutation {
     addUser(name: String!, email: String!): User
     addItinerary(description: String!, date: String!, location: String!): Itinerary
+    addProfile(name: String!, email: String!, password: String!): User
+    login(email: String!, password: String!): User
   }
 `;
 
