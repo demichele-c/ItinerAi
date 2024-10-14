@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const { Schema, model} = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -10,14 +11,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    match: [/.+@.+\..+/, 'Must match an email address!'],
   },
   password: {
     type: String,
     required: true,
+    minlength: 5,
   },
   itineraries: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Itinerary',
     },
   ],
@@ -51,5 +54,5 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 module.exports = User;
