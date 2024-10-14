@@ -46,7 +46,7 @@ const resolvers = {
 
       // if there is no profile throw custom made error
       if (!profile) {
-        throw AuthenticateError;
+        throw AuthenticationError;
       }
 
       // If we find profile then we will compare the password to make sure it is correct
@@ -54,7 +54,7 @@ const resolvers = {
 
       // if password is not correct throw custom made error
       if (!correctPw) {
-        throw AuthenticateError;
+        throw AuthenticationError;
       }
 
       // passing email, name, and id from profile
