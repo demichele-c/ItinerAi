@@ -14,7 +14,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-=======
+
       '/api': 'http://localhost:3001',
     },
     build: {
