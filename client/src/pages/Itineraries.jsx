@@ -22,6 +22,8 @@ const Itineraries = () => {
 
   // Create variables to store the form parameters
   const itLocation = formParams.location;
+  console.log(`itLocation: ${itLocation}`);
+  //console.log(`formParams: `, formParams);
   // const itDate = formParams.date;
   // const itCelebration = formParams.celebration;
   // const itInterests = formParams.interests;
@@ -30,16 +32,18 @@ const Itineraries = () => {
   // useEffect hook to make API call when component is mounted
   useEffect(() => {
     const fetchItineraries = async () => {
-      const { data } = await axios.get('/api/openAI/', { params: { location: itLocation } });
-      setItineraries(data);
+      const openAiRes = await axios.get(`/openAI?itLocation=${itLocation}`);
+      //const openAiRes = await axios.get('/openAI?itLocation=$itLoaction', { params: { itLocation: itLocation } });
+      //setItineraries(openAiRes.data);
+      console.log(`openAi_Response: `, openAiRes.data);
     };
 
     fetchItineraries();
     setIsLoading(false);
-    console.log(itineraries);
-  }, [itLocation, itineraries]);
+    //console.log(itineraries);
+  }, []);
 
-  // If isLoadign is true, display spinner while waiting for data
+  // If isLoading is true, display spinner while waiting for data
   if (isLoading) {
     return (
       <>

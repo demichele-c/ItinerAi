@@ -1,7 +1,9 @@
 // Import the react hooks
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
 
+// import { useNavigate } from 'react-router-dom';
+import { FETCH_ITINERARIES } from '../utils/mutations';
 // Import the Material-UI components
 import { TextField, Button, Box, MenuItem, Slider, Typography } from '@mui/material';
 
@@ -16,7 +18,7 @@ const formatTime = (value) => {
 
 const UserInputForm = () => {
   // Initialize the navigate hook
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Initialize state variables
   const [location, setLocation] = useState('');
@@ -26,10 +28,21 @@ const UserInputForm = () => {
   const [foodPreferences, setFoodPreferences] = useState('');
   const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
 
-  const handleSubmit = (e) => {
+  const [aiResponse, { error }] = useMutation(FETCH_ITINERARIES);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(location, date, celebration, interests, foodPreferences, timeRange);
-    navigate('/itineraries', { state: { location, date, celebration, interests, foodPreferences } });
+    // navigate('/itineraries', {
+    //   state: { itLocation: location, itDate: date, itCelebration: celebration, itInterests: interests, itFoodPreferences: foodPreferences },
+    // });
+    try {
+      const { data } = await aiResponse({
+        variables: { itLocation: location },
+      });
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
