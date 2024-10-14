@@ -23,3 +23,11 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const FETCH_ITINERARIES = gql`
+  mutation AiResponse($itLocation: String) {
+    aiResponse(itLocation: $itLocation) {
+      itLocation
+    }
+  }
+`;
