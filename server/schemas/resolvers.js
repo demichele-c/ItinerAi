@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -23,9 +24,9 @@ const resolvers = {
 
   Mutation: {
     // Register a profile
-    addProfile: async (parent, { name, email, password }) => {
+    addProfile: async (parent, { username, email, password }) => {
       // create profile
-      const profile = await Profile.create({ name, email, password });
+      const profile = await User.create({ username, email, password });
       // Make a token
       const token = signToken(profile);
 
@@ -33,10 +34,15 @@ const resolvers = {
       return { token, profile };
     },
 
+    aiResponse: async (parent, { itLocation }) => {
+      console.log(itLocation);
+      return { itLocation };
+    },
+
     // The purpose of login is to verify that the user is logged in correctly
     login: async (parent, { email, password }) => {
       // Try to find the email in the profile list
-      const profile = await Profile.findOne({ email });
+      const profile = await User.findOne({ email });
 
       // if there is no profile throw custom made error
       if (!profile) {
