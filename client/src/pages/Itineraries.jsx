@@ -22,8 +22,8 @@ const Itineraries = () => {
 
   // Create variables to store the form parameters
   const itLocation = formParams.location;
-  console.log(`itLocation: ${itLocation}`);
-  //console.log(`formParams: `, formParams);
+  console.log(`itLocation:`, formParams.itLocation);
+  console.log(`formParams: `, formParams);
   // const itDate = formParams.date;
   // const itCelebration = formParams.celebration;
   // const itInterests = formParams.interests;
