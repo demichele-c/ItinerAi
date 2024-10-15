@@ -7,6 +7,7 @@ const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const dotenv = require('dotenv');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { type } = require('os');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,8 +17,8 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  introspection: true,  // Enables introspection (required for GraphQL Playground)
-  playground: true,     // Enables GraphQL Playground in development mode
+  introspection: true, // Enables introspection (required for GraphQL Playground)
+  playground: true, // Enables GraphQL Playground in development mode
 });
 
 // MongoDB client setup using MongoClient
@@ -28,21 +29,21 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function connectToDatabase() {
   try {
     await client.connect();
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB with MongoClient!");
+    await client.db('admin').command({ ping: 1 });
+    console.log('Pinged your deployment. You successfully connected to MongoDB with MongoClient!');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
     process.exit(1); // Exit process if MongoDB fails to connect
   }
 }
 
-const startApolloServer = async () => {
+const startApolloServer = async (typeDefs, resolvers) => {
   try {
     await server.start();
     console.log('Apollo Server started successfully.');
@@ -81,4 +82,4 @@ const startApolloServer = async () => {
 };
 
 // Start the Apollo and Express server
-startApolloServer();
+startApolloServer(typeDefs, resolvers);
