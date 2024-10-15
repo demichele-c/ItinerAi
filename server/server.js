@@ -5,7 +5,6 @@ const path = require('path');
 const { authMiddleware } = require('./utils/auth');
 
 const { typeDefs, resolvers } = require('./schemas');
-const db = require('./config/connection');  // Presumably your current mongoose setup
 const dotenv = require('dotenv');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -17,6 +16,8 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,  // Enables introspection (required for GraphQL Playground)
+  playground: true,     // Enables GraphQL Playground in development mode
 });
 
 // MongoDB client setup using MongoClient
@@ -32,49 +33,52 @@ const client = new MongoClient(uri, {
 
 async function connectToDatabase() {
   try {
-    // Connect the client to the server
     await client.connect();
-    // Ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB with MongoClient!");
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
+    process.exit(1); // Exit process if MongoDB fails to connect
   }
 }
 
-// Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
-  await server.start();
+  try {
+    await server.start();
+    console.log('Apollo Server started successfully.');
 
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(express.json());
 
-  app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: authMiddleware,
-    })
-  );
+    app.use(
+      '/graphql',
+      expressMiddleware(server, {
+        context: authMiddleware,
+      })
+    );
+    console.log('GraphQL middleware applied to /graphql');
 
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+    if (process.env.NODE_ENV === 'production') {
+      app.use(express.static(path.join(__dirname, '../client/dist')));
 
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      });
+      console.log('Serving static files in production.');
+    }
+
+    // First connect to MongoDB before starting the server
+    await connectToDatabase();
+
+    // Start the server and bind it to all interfaces (0.0.0.0)
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`API server running on http://localhost:${PORT}`);
+      console.log(`GraphQL Playground available at http://localhost:${PORT}/graphql`);
     });
+  } catch (error) {
+    console.error('Error starting Apollo server or Express:', error);
   }
-
-  // First connect to MongoDB before starting the server
-  await connectToDatabase();
-
-  // Start the server only after MongoDB is connected
-  db.once('open', () => {
-    app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
-    });
-  });
 };
 
-// Call the async function to start the server
+// Start the Apollo and Express server
 startApolloServer();
