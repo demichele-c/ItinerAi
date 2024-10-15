@@ -4,6 +4,8 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
   # Define the User type
   type User {
+    username: String
+    password: String!
     id: ID!
     name: String!
     email: String!
@@ -13,13 +15,17 @@ const typeDefs = gql`
     token: ID!
     user: User
   }
-    
+
   # Define the Itinerary type
   type Itinerary {
     id: ID!
     description: String!
     date: String!
     location: String!
+  }
+
+  type aiResponse {
+    itLocation: String
   }
 
   # Define the Query type
@@ -32,8 +38,10 @@ const typeDefs = gql`
 
   # Define the Mutation type
   type Mutation {
-    addUser(name: String!, email: String!): User
     addItinerary(description: String!, date: String!, location: String!): Itinerary
+    addProfile(username: String!, email: String!, password: String!): Auth
+    login(email: String!, password: String!): Auth
+    aiResponse(itLocation: String): aiResponse
   }
 `;
 

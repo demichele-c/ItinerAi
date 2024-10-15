@@ -16,4 +16,5 @@ const itinerarySchema = new Schema({
   // },
 });
 
+
 module.exports = model('Itinerary', itinerarySchema);

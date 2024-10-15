@@ -1,7 +1,7 @@
 const chat = require('express').Router();
 
 chat.get('/', (req, res) => {
-  res.send('ChatGPT GET Working!');
+  res.send('OpenAI Route Working!');
 });
 
 module.exports = chat;

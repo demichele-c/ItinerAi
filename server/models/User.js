@@ -1,4 +1,5 @@
 const { Schema, model} = require('mongoose');
+
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
@@ -28,7 +29,7 @@ const userSchema = new Schema({
 
 // set up pre-save middleware to create password
 // We want to run the function before the document is saved
-userSchema.pre('save', async function (next){
+userSchema.pre('save', async function (next) {
   // if this is a new user or the password has been changed
   // we want to create an encrypted password
   if (this.isNew || this.isModified('password')) {
@@ -42,7 +43,7 @@ userSchema.pre('save', async function (next){
 // This function will get the current password that the user typed in and the eccrypted password in the database
 userSchema.methods.isCorrectPassword = async function (password) {
   // .compare will return true or false
-  // Create a custom method to compare the passed in password with the hashed password 
+  // Create a custom method to compare the passed in password with the hashed password
   return bcrypt.compare(password, this.password);
 };
 
