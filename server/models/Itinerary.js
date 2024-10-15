@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const itinerarySchema = new mongoose.Schema({
+const itinerarySchema = new Schema({
   date: {
     type: String,
     required: true,
@@ -9,11 +9,12 @@ const itinerarySchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
+  // user: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'User',
+  //   required: true,
+  // },
 });
-const Itinerary = mongoose.model('Itinerary', itinerarySchema);
-module.exports = Itinerary;
+
+
+module.exports = model('Itinerary', itinerarySchema);
