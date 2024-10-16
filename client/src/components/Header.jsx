@@ -14,7 +14,6 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
       <Toolbar>
@@ -66,6 +65,5 @@ const Header = () => {
     </AppBar>
   );
 };
-
 
 export default Header;
