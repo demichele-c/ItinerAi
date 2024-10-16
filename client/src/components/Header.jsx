@@ -51,7 +51,7 @@ const Header = () => {
               Home
             </Button>
           </MenuItem>
-          <MenuItem onClick={handleClose} component={Link} to="/profile" sx={{ mx: 1 }}>
+          <MenuItem onClick={handleClose} component={Link} to="/me" sx={{ mx: 1 }}>
             <Button>
               Profile
             </Button>
