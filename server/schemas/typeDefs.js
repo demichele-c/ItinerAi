@@ -25,7 +25,7 @@ const typeDefs = gql`
   }
 
   type aiResponse {
-    itLocation: String
+    content: String
   }
 
   # Define the Query type
@@ -41,7 +41,7 @@ const typeDefs = gql`
     addItinerary(description: String!, date: String!, location: String!): Itinerary
     addProfile(username: String!, email: String!, password: String!, name: String!): Auth
     login(email: String!, password: String!): Auth
-    aiResponse(itLocation: String): aiResponse
+    aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String): aiResponse
   }
 `;
 
