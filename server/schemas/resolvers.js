@@ -24,19 +24,19 @@ const resolvers = {
 
   Mutation: {
     // Register a profile
-    addProfile: async (parent, { username, email, password }) => {
+    addProfile: async (parent, { username, email, password, name }) => {
       // create profile
-      const profile = await User.create({ username, email, password });
+      const profile = await User.create({ username, email, password, name });
       // Make a token
       const token = signToken(profile);
 
       // Send token back to the front end
-      return { token, profile };
+      return { token, user: profile };
     },
 
     aiResponse: async (parent, { itLocation }) => {
-      console.log(itLocation);
-      return { itLocation };
+      // console.log(itLocation);
+      // return { itLocation };
     },
 
     // The purpose of login is to verify that the user is logged in correctly
@@ -63,7 +63,7 @@ const resolvers = {
 
       // return the token and the profile that was found
       // We are allowing the user to have a token
-      return { token, profile };
+      return { token, user: profile };
     },
 
     // Add a new user
