@@ -46,18 +46,18 @@ const Header = () => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>
-            <Button component={Link} to="/" sx={{ mx: 1}}>
+          <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1}}>
+            <Button>
               Home
             </Button>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Button component={Link} to="/profile" sx={{ mx: 1 }}>
+          <MenuItem onClick={handleClose} component={Link} to="/profile" sx={{ mx: 1 }}>
+            <Button>
               Profile
             </Button>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Button component={Link} to="/itineraries" sx={{ mx: 1 }}>
+          <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
+            <Button>
               Itineraries
             </Button>
           </MenuItem>
