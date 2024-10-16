@@ -5,10 +5,10 @@ const typeDefs = gql`
   # Define the User type
   type User {
     username: String
-    password: String!
-    id: ID!
-    name: String!
-    email: String!
+    password: String
+    id: ID
+    name: String
+    email: String
   }
 
   type Auth {
@@ -39,7 +39,7 @@ const typeDefs = gql`
   # Define the Mutation type
   type Mutation {
     addItinerary(description: String!, date: String!, location: String!): Itinerary
-    addProfile(username: String!, email: String!, password: String!): Auth
+    addProfile(username: String!, email: String!, password: String!, name: String!): Auth
     login(email: String!, password: String!): Auth
     aiResponse(itLocation: String): aiResponse
   }
