@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
       <Toolbar>
-        <Typography align="left" variant="h6" color="inherit" component={Link} to="/" sx={{ flexGrow: 1 }}>
+        <Typography align="left" variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
           ItinerAi
         </Typography>
         <Box>
@@ -27,6 +27,8 @@ const Header = () => {
           </Button>
         </Box>
         <MenuIcon 
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
           onClick={handleMenu}
         />
         <Menu
@@ -42,16 +44,21 @@ const Header = () => {
             horizontal: 'right',
           }}
           open={Boolean(anchorEl)}
-          onclose={handleClose}
+          onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>
-            <Button component={Link} to="/itineraries" sx={{ mx: 1 }}>
-              Itineraries
+            <Button component={Link} to="/" sx={{ mx: 1}}>
+              Home
             </Button>
           </MenuItem>
           <MenuItem onClick={handleClose}>
             <Button component={Link} to="/profile" sx={{ mx: 1 }}>
               Profile
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Button component={Link} to="/itineraries" sx={{ mx: 1 }}>
+              Itineraries
             </Button>
           </MenuItem>
         </Menu>
