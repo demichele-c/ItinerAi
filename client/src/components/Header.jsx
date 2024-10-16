@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography, Button, Menu, MenuItem} from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Menu, MenuItem} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 
@@ -21,6 +21,11 @@ const Header = () => {
         <Typography align="left" variant="h6" color="inherit" component={Link} to="/" sx={{ flexGrow: 1 }}>
           ItinerAi
         </Typography>
+        <Box>
+          <Button color="inherit" component={Link} to="/login" sx={{ mx: 1 }}>
+            Login
+          </Button>
+        </Box>
         <MenuIcon 
           onClick={handleMenu}
         />
@@ -47,11 +52,6 @@ const Header = () => {
           <MenuItem onClick={handleClose}>
             <Button component={Link} to="/profile" sx={{ mx: 1 }}>
               Profile
-            </Button>
-          </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Button component={Link} to="/login" sx={{ mx: 1 }}>
-              Login
             </Button>
           </MenuItem>
         </Menu>
