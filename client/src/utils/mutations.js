@@ -25,9 +25,9 @@ export const LOGIN_USER = gql`
 `;
 
 export const FETCH_ITINERARIES = gql`
-  mutation AiResponse($itLocation: String) {
-    aiResponse(itLocation: $itLocation) {
-      itLocation
+  mutation AiResponse($itLocation: String, $itCelebration: String, $itFoodPreferences: String) {
+    aiResponse(itLocation: $itLocation, itCelebration: $itCelebration, itFoodPreferences: $itFoodPreferences) {
+      content
     }
   }
 `;

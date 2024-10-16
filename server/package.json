@@ -19,6 +19,7 @@
     "graphql": "^16.9.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
+    "openai": "^4.67.3",
     "path": "^0.12.7"
   },
   "devDependencies": {

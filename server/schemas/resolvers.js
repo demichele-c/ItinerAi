@@ -1,3 +1,7 @@
+const OpenAIApi = require('openai');
+
+require('dotenv').config();
+
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
 const { signToken, AuthenticationError } = require('../utils/auth');
@@ -34,9 +38,39 @@ const resolvers = {
       return { token, user: profile };
     },
 
-    aiResponse: async (parent, { itLocation }) => {
+    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference }) => {
       // console.log(itLocation);
-      // return { itLocation };
+      const openai = new OpenAIApi({
+        api_key: process.env.OPENAIKEY,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        temperature: 0.2,
+        max_tokens: 500,
+        messages: [
+          {
+            role: 'system',
+            content: `
+          		I need to return this information in JSON formatted but exclude the json\n, one key object value will be the city name with certainly here is the list, another key object value will save an array of each recommendation provided, each recommendation should include a key value for the restaurant description, address, phone number and name. If key values are not found please provide "N/A".  I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food. 
+    I'm interested in a ${itCelebration} dining experience. Could you give me up to three recommendations?`,
+          },
+          // {
+          //   role: 'system',
+          //   content: systemContent,
+          // },
+          // {
+          // 	role: 'user',
+          // 	content: systemContent,
+          // },
+          // ...messages,
+        ],
+      });
+
+      // const APIResponse = new Response(JSON.stringify({ response: response.data.choices[0] }));
+      console.log(response.choices[0].message);
+
+      return response.choices[0].message;
     },
 
     // The purpose of login is to verify that the user is logged in correctly
