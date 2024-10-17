@@ -34,6 +34,7 @@ const Itineraries = () => {
           itLocation: formParams.itLocation,
           itCelebration: formParams.itCelebration,
           itFoodPreferences: formParams.itFoodPreferences,
+          itInterests: formParams.itInterests,
           itTimeRange: formParams.itTimeRange,
         },
       });
@@ -51,11 +52,12 @@ const Itineraries = () => {
   // If isLoading is true, display spinner while waiting for data
   if (isLoading) {
     return (
-      <>
-        <CircularProgress size={50} />
-      </>
+      <div style={{ marginTop: '200px', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress size={100} />
+      </div>
     );
   }
+  
   // Data has been retrieved, display the itinerary list
   else {
     return (

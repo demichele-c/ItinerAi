@@ -72,13 +72,14 @@ const resolvers = {
           {
             role: 'system',
             content: `
+            
             Please return a detailed itinerary in JSON format but exclude the json\n.
             The JSON should include the following keys:
             - "city": The name of the city.
             - "date": The planned date for the itinerary.
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": An array of the user's interests related to the experience.
-            - "activities": An array of suggested activities to do within the specified time frame.
+            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area.
             - "dining_options": An array of dining recommendations, where each recommendation includes:
                 - "name": The name of the restaurant.
                 - "description": A brief description of the restaurant.
@@ -88,7 +89,7 @@ const resolvers = {
             I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food.
             I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
-            Please provide a detailed itinerary including three dining options and a list of activities.`,
+            Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
           },
       
         ],
