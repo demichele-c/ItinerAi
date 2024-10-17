@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Button, Grid, Box } from '@mui/material';
 
 const ItineraryCard = ({ name, address, phone, description }) => (
