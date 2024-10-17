@@ -1,5 +1,5 @@
 const OpenAIApi = require('openai');
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 require('dotenv').config();
 
 const User = require('../models/User');
@@ -37,6 +37,26 @@ const resolvers = {
       // Send token back to the front end
       return { token, user: profile };
     },
+    createCheckoutSession: async (parent, { userId }) => {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your price ID
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/me`,
+        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        metadata: { userId },
+      });
+
+      // Update user to upgraded
+      await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
+
+      return { id: session.id };
+    },
 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference }) => {
       // console.log(itLocation);
@@ -55,19 +75,11 @@ const resolvers = {
           		I need to return this information in JSON formatted but exclude the json\n, one key object value will be the city name with certainly here is the list, another key object value will save an array of each recommendation provided, each recommendation should include a key value for the restaurant description, address, phone number and name. If key values are not found please provide "N/A".  I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food. 
     I'm interested in a ${itCelebration} dining experience. Could you give me up to three recommendations?`,
           },
-          // {
-          //   role: 'system',
-          //   content: systemContent,
-          // },
-          // {
-          // 	role: 'user',
-          // 	content: systemContent,
-          // },
-          // ...messages,
+      
         ],
       });
 
-      // const APIResponse = new Response(JSON.stringify({ response: response.data.choices[0] }));
+    
       console.log(response.choices[0].message);
 
       return response.choices[0].message;
@@ -112,5 +124,6 @@ const resolvers = {
     },
   },
 };
+
 
 module.exports = resolvers;

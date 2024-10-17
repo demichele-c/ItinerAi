@@ -1,3 +1,5 @@
+
+// module.exports = typeDefs;
 const { gql } = require('apollo-server-express');
 
 // Define your GraphQL schema using gql
@@ -9,6 +11,7 @@ const typeDefs = gql`
     id: ID
     name: String
     email: String
+    isUpgraded: Boolean!  # Track if the user is upgraded
   }
 
   type Auth {
@@ -41,7 +44,12 @@ const typeDefs = gql`
     addItinerary(description: String!, date: String!, location: String!): Itinerary
     addProfile(username: String!, email: String!, password: String!, name: String!): Auth
     login(email: String!, password: String!): Auth
-    aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String): aiResponse
+    createCheckoutSession(userId: ID!): CheckoutSession  # New mutation for Stripe checkout
+     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String): aiResponse
+  }
+
+  type CheckoutSession {
+    id: String!
   }
 `;
 
