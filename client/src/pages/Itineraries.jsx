@@ -23,14 +23,7 @@ const Itineraries = () => {
   const location = useLocation();
   const formParams = location.state || {};
 
-  // Create variables to store the form parameters
-  // console.log(`itLocation:`, formParams.itLocation);
-  // console.log(`formParams: `, formParams);
-  // const itDate = formParams.date;
-  // const itCelebration = formParams.celebration;
-  // const itInterests = formParams.interests;
-  // const itFoodPreferences = formParams.foodPreferences;
-
+ 
   // useEffect hook to make API call when component is mounted
   useEffect(() => {
     const fetchItineraries = async () => {
@@ -41,15 +34,14 @@ const Itineraries = () => {
           itLocation: formParams.itLocation,
           itCelebration: formParams.itCelebration,
           itFoodPreferences: formParams.itFoodPreferences,
+          itInterests: formParams.itInterests,
+          itTimeRange: formParams.itTimeRange,
         },
       });
       console.log(`data: `, JSON.parse(data.aiResponse.content));
       setItineraries(JSON.parse(data.aiResponse.content));
       setIsLoading(false);
-      // const openAiRes = await axios.get(`/openAI?itLocation=${itLocation}`);
-      //const openAiRes = await axios.get('/openAI?itLocation=$itLoaction', { params: { itLocation: itLocation } });
-      //setItineraries(openAiRes.data);
-      // console.log(`openAi_Response: `, openAiRes.data);
+      
     };
 
     fetchItineraries();
@@ -60,11 +52,12 @@ const Itineraries = () => {
   // If isLoading is true, display spinner while waiting for data
   if (isLoading) {
     return (
-      <>
-        <CircularProgress size={50} />
-      </>
+      <div style={{ marginTop: '200px', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress size={100} />
+      </div>
     );
   }
+  
   // Data has been retrieved, display the itinerary list
   else {
     return (

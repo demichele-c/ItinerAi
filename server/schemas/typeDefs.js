@@ -45,7 +45,7 @@ const typeDefs = gql`
     addProfile(username: String!, email: String!, password: String!, name: String!): Auth
     login(email: String!, password: String!): Auth
     createCheckoutSession(userId: ID!): CheckoutSession  # New mutation for Stripe checkout
-     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String): aiResponse
+     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): aiResponse
   }
 
   type CheckoutSession {
