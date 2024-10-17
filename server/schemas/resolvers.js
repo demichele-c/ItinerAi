@@ -58,7 +58,7 @@ const resolvers = {
       return { id: session.id };
     },
 
-    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference }) => {
+    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
       const openai = new OpenAIApi({
         api_key: process.env.OPENAIKEY,
@@ -72,8 +72,23 @@ const resolvers = {
           {
             role: 'system',
             content: `
-          		I need to return this information in JSON formatted but exclude the json\n, one key object value will be the city name with certainly here is the list, another key object value will save an array of each recommendation provided, each recommendation should include a key value for the restaurant description, address, phone number and name. If key values are not found please provide "N/A".  I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food. 
-    I'm interested in a ${itCelebration} dining experience. Could you give me up to three recommendations?`,
+            Please return a detailed itinerary in JSON format but exclude the json\n.
+            The JSON should include the following keys:
+            - "city": The name of the city.
+            - "date": The planned date for the itinerary.
+            - "time_frame": The specified time frame for the activities and dining.
+            - "interests": An array of the user's interests related to the experience.
+            - "activities": An array of suggested activities to do within the specified time frame.
+            - "dining_options": An array of dining recommendations, where each recommendation includes:
+                - "name": The name of the restaurant.
+                - "description": A brief description of the restaurant.
+                - "address": The address of the restaurant.
+                - "phone": The phone number of the restaurant.
+            If any key values are not found, please provide "N/A".
+            I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food.
+            I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
+            Additionally, my interests include ${itInterests}.
+            Please provide a detailed itinerary including three dining options and a list of activities.`,
           },
       
         ],

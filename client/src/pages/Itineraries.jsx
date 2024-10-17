@@ -23,14 +23,7 @@ const Itineraries = () => {
   const location = useLocation();
   const formParams = location.state || {};
 
-  // Create variables to store the form parameters
-  // console.log(`itLocation:`, formParams.itLocation);
-  // console.log(`formParams: `, formParams);
-  // const itDate = formParams.date;
-  // const itCelebration = formParams.celebration;
-  // const itInterests = formParams.interests;
-  // const itFoodPreferences = formParams.foodPreferences;
-
+ 
   // useEffect hook to make API call when component is mounted
   useEffect(() => {
     const fetchItineraries = async () => {
@@ -41,15 +34,13 @@ const Itineraries = () => {
           itLocation: formParams.itLocation,
           itCelebration: formParams.itCelebration,
           itFoodPreferences: formParams.itFoodPreferences,
+          itTimeRange: formParams.itTimeRange,
         },
       });
       console.log(`data: `, JSON.parse(data.aiResponse.content));
       setItineraries(JSON.parse(data.aiResponse.content));
       setIsLoading(false);
-      // const openAiRes = await axios.get(`/openAI?itLocation=${itLocation}`);
-      //const openAiRes = await axios.get('/openAI?itLocation=$itLoaction', { params: { itLocation: itLocation } });
-      //setItineraries(openAiRes.data);
-      // console.log(`openAi_Response: `, openAiRes.data);
+      
     };
 
     fetchItineraries();

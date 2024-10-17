@@ -29,8 +29,17 @@ const UserInputForm = ({ children }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Format the timeRange into a string
+    const formattedTimeRange = `between ${formatTime(timeRange[0])} and ${formatTime(timeRange[1])}`;
     navigate('/itineraries', {
-      state: { itLocation: location, itDate: date, itCelebration: celebration, itInterests: interests, itFoodPreferences: foodPreferences },
+      state: {
+        itLocation: location,
+        itDate: date,
+        itCelebration: celebration,
+        itInterests: interests,
+        itFoodPreferences: foodPreferences,
+        itTimeRange: formattedTimeRange,
+      },
     });
   };
 
