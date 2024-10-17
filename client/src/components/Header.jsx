@@ -15,7 +15,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
+    <AppBar position="sticky" sx={{ backgroundColor: '#1976d2' }}>
       <Toolbar>
         <Typography align="left" variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
           ItinerAi
