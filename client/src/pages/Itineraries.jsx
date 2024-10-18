@@ -1,5 +1,3 @@
-// Import Axiox to make API calls (data retrieval)
-import axios from 'axios';
 import { useMutation } from '@apollo/client';
 
 // Import React Hooks
@@ -23,7 +21,6 @@ const Itineraries = () => {
   const location = useLocation();
   const formParams = location.state || {};
 
- 
   // useEffect hook to make API call when component is mounted
   useEffect(() => {
     const fetchItineraries = async () => {
@@ -41,7 +38,6 @@ const Itineraries = () => {
       console.log(`data: `, JSON.parse(data.aiResponse.content));
       setItineraries(JSON.parse(data.aiResponse.content));
       setIsLoading(false);
-      
     };
 
     fetchItineraries();
@@ -57,7 +53,7 @@ const Itineraries = () => {
       </div>
     );
   }
-  
+
   // Data has been retrieved, display the itinerary list
   else {
     return (

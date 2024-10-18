@@ -2,17 +2,17 @@ import { useState } from 'react';
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
-import { UPGRADE_USER } from '../utils/mutations';
+import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [upgradeUser] = useMutation(UPGRADE_USER);
+  const [stripePayment] = useMutation(STRIPE_PAYMENT);
 
   // Use a real user ID from your MongoDB database
-  const user = { username: 'testuser', isUpgraded: false, id: '605c72f4d3a0e92f742a4ef8' }; // Replace with a valid ObjectId
+  const user = { username: 'chuck_d', id: '6711a82fcb8f228d83135a39' }; // Replace with a valid ObjectId
   const isUpgraded = user?.isUpgraded || false;
 
   const handleUpgrade = async () => {
@@ -21,7 +21,7 @@ const Profile = () => {
 
     try {
       // Call the mutation to create a checkout session
-      const { data } = await upgradeUser({ variables: { userId: user.id } });
+      const { data } = await stripePayment({ variables: { userId: user.id } });
       const sessionId = data.createCheckoutSession.id;
 
       const { error } = await stripe.redirectToCheckout({
@@ -34,8 +34,11 @@ const Profile = () => {
     } catch (error) {
       console.error('Error during checkout:', error);
     } finally {
+      console.log(`StripeRes: , ${data}`);
       setIsLoading(false);
     }
+    // If Payment is successful, call the upgradeUser mutation
+    //const [upgradeUser] = useMutation(UPGRADE_USER);
   };
 
   return (
@@ -52,26 +55,16 @@ const Profile = () => {
       {!isUpgraded ? (
         <Box sx={{ mt: 4 }}>
           <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
-              Upgrade your account to unlock premium features and save your itineraries!
-            </Typography>
+            <Typography variant="body2">Upgrade your account to unlock premium features and save your itineraries!</Typography>
           </Alert>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleUpgrade}
-            disabled={isLoading}
-          >
+          <Button variant="contained" color="primary" fullWidth onClick={handleUpgrade} disabled={isLoading}>
             {isLoading ? 'Processing...' : 'Upgrade'}
           </Button>
         </Box>
       ) : (
         <Box sx={{ mt: 4 }}>
           <Alert severity="success">
-            <Typography variant="body2">
-              Thank you for upgrading! You now have access to premium features.
-            </Typography>
+            <Typography variant="body2">Thank you for upgrading! You now have access to premium features.</Typography>
           </Alert>
         </Box>
       )}

@@ -24,7 +24,7 @@ export const LOGIN_USER = gql`
   }
 `;
 
-export const UPGRADE_USER = gql`
+export const STRIPE_PAYMENT = gql`
   mutation createCheckoutSession($userId: ID!) {
     createCheckoutSession(userId: $userId) {
       id
@@ -32,9 +32,24 @@ export const UPGRADE_USER = gql`
   }
 `;
 
+export const UPGRADE_USER = gql`
+  mutation upgradeUser($userId: ID!, $isUpgraded: Boolean) {
+    upgradeUser(userId: $userId, isUpgraded: $isUpgraded) {
+      id
+    }
+  }
+`;
+
 export const FETCH_ITINERARIES = gql`
-  mutation AiResponse($itLocation: String, $itDate: String, $itCelebration: String, $itInterests: String, $itFoodPreferences: String, $itTimeRange: String) {
-    aiResponse(itLocation: $itLocation, itDate: $itDate, itCelebration: $itCelebration, itInterests: $itInterests, itFoodPreferences: $itFoodPreferences, itTimeRange: $itTimeRange) {
+  mutation aiResponse($itLocation: String, $itDate: String, $itCelebration: String, $itInterests: String, $itFoodPreferences: String, $itTimeRange: String) {
+    aiResponse(
+      itLocation: $itLocation
+      itDate: $itDate
+      itCelebration: $itCelebration
+      itInterests: $itInterests
+      itFoodPreferences: $itFoodPreferences
+      itTimeRange: $itTimeRange
+    ) {
       content
     }
   }
