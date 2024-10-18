@@ -20,6 +20,18 @@ const Header = () => {
         <Typography align="left" variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
           ItinerAi
         </Typography>
+        <Box sx= {{ display: { xs: 'none', md: 'block'}}}>
+          <Button color="inherit" component={Link} to="/" sx={{ mx: 1 }}>
+            Home
+          </Button>
+          <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
+            Profile
+          </Button>
+          <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
+            Itineraries
+          </Button>
+        </Box>
+          
         <Box>
           <Button color="inherit" component={Link} to="/login" sx={{ mx: 1 }}>
             Login
@@ -29,6 +41,7 @@ const Header = () => {
           aria-controls="menu-appbar"
           aria-haspopup="true"
           onClick={handleMenu}
+          sx={{ display: {md: 'none'} }}
         />
         <Menu
           id="menu-appbar"
