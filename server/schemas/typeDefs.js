@@ -1,4 +1,3 @@
-
 // module.exports = typeDefs;
 const { gql } = require('apollo-server-express');
 
@@ -11,7 +10,7 @@ const typeDefs = gql`
     id: ID
     name: String
     email: String
-    isUpgraded: Boolean!  # Track if the user is upgraded
+    isUpgraded: Boolean
   }
 
   type Auth {
@@ -25,6 +24,10 @@ const typeDefs = gql`
     description: String!
     date: String!
     location: String!
+  }
+
+  type CheckoutSession {
+    id: String!
   }
 
   type aiResponse {
@@ -43,13 +46,10 @@ const typeDefs = gql`
   type Mutation {
     addItinerary(description: String!, date: String!, location: String!): Itinerary
     addProfile(username: String!, email: String!, password: String!, name: String!): Auth
+    upgradeUser(userId: ID!, isUpgraded: Boolean): User
     login(email: String!, password: String!): Auth
-    createCheckoutSession(userId: ID!): CheckoutSession  # New mutation for Stripe checkout
-     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): aiResponse
-  }
-
-  type CheckoutSession {
-    id: String!
+    createCheckoutSession(userId: ID!): CheckoutSession
+    aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): aiResponse
   }
 `;
 

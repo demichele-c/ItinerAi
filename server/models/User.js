@@ -23,6 +23,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  isUpgraded: {
+    type: Boolean,
+    default: false,
+  },
   itineraries: [
     {
       type: Schema.Types.ObjectId,
