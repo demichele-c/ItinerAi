@@ -48,15 +48,21 @@ const resolvers = {
         ],
         mode: 'payment',
         success_url: `${process.env.CLIENT_URL}/me`,
-        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        cancel_url: `${process.env.CLIENT_URL}/me`,
         metadata: { userId },
       });
 
       // Update user to upgraded
-      await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
+      console.log(`UserId: , ${userId}`);
+      const user = await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
+      console.log(`User: , ${user}`);
+      //await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
 
       return { id: session.id };
     },
+    // upgradeUser: async (parent, { userId, isUpgraded }) => {
+    //   return await User.findByIdAndUpdate({ isUpgraded }, { new: true });
+    // },
 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
@@ -91,11 +97,9 @@ const resolvers = {
             Additionally, my interests include ${itInterests}.
             Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
           },
-      
         ],
       });
 
-    
       console.log(response.choices[0].message);
 
       return response.choices[0].message;
@@ -128,11 +132,6 @@ const resolvers = {
       return { token, user: profile };
     },
 
-    // Add a new user
-    // addUser: async (parent, { name, email, password }) => {
-    //   const user = await User.create({ name, email, password });
-    //   return user;
-    // },
     // Add a new itinerary
     addItinerary: async (parent, { description, date, location }) => {
       const itinerary = await Itinerary.create({ description, date, location });
@@ -140,6 +139,5 @@ const resolvers = {
     },
   },
 };
-
 
 module.exports = resolvers;
