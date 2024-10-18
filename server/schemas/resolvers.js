@@ -30,9 +30,11 @@ const resolvers = {
     // Register a profile
     addProfile: async (parent, { username, email, password, name }) => {
       // create profile
+      console.log("Sigup",username, email, password, name)
       const profile = await User.create({ username, email, password, name });
       // Make a token
       const token = signToken(profile);
+      console.log("Token",profile,token)
 
       // Send token back to the front end
       return { token, user: profile };
