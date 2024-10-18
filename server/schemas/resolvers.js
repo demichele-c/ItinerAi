@@ -1,3 +1,7 @@
+const OpenAIApi = require('openai');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+require('dotenv').config();
+
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
 const { signToken, AuthenticationError } = require('../utils/auth');
@@ -33,10 +37,68 @@ const resolvers = {
       // Send token back to the front end
       return { token, user: profile };
     },
+    createCheckoutSession: async (parent, { userId }) => {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your price ID
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/me`,
+        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        metadata: { userId },
+      });
 
-    aiResponse: async (parent, { itLocation }) => {
+      // Update user to upgraded
+      await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
+
+      return { id: session.id };
+    },
+
+    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
-      // return { itLocation };
+      const openai = new OpenAIApi({
+        api_key: process.env.OPENAIKEY,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        temperature: 0.2,
+        max_tokens: 500,
+        messages: [
+          {
+            role: 'system',
+            content: `
+            
+            Please return a detailed itinerary in JSON format but exclude the json\n.
+            The JSON should include the following keys:
+            - "city": The name of the city.
+            - "date": The planned date for the itinerary.
+            - "time_frame": The specified time frame for the activities and dining.
+            - "interests": An array of the user's interests related to the experience.
+            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area.
+            - "dining_options": An array of dining recommendations, where each recommendation includes:
+                - "name": The name of the restaurant.
+                - "description": A brief description of the restaurant.
+                - "address": The address of the restaurant.
+                - "phone": The phone number of the restaurant.
+            If any key values are not found, please provide "N/A".
+            I am in ${itLocation} and I'm looking for a place to have ${itFoodPreference} food.
+            I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
+            Additionally, my interests include ${itInterests}.
+            Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
+          },
+      
+        ],
+      });
+
+    
+      console.log(response.choices[0].message);
+
+      return response.choices[0].message;
     },
 
     // The purpose of login is to verify that the user is logged in correctly
@@ -78,5 +140,6 @@ const resolvers = {
     },
   },
 };
+
 
 module.exports = resolvers;
