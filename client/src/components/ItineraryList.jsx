@@ -29,7 +29,7 @@ const ItineraryList = ({ itineraries }) => {
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Activities */}
+      {/* Activities
       {activities && activities.length > 0 && (
         <>
           <Typography variant="h5" gutterBottom>
@@ -44,7 +44,7 @@ const ItineraryList = ({ itineraries }) => {
           </List>
           <Divider sx={{ my: 2 }} />
         </>
-      )}
+      )} */}
 
       {/* Dining Options */}
       {dining_options && dining_options.length > 0 && (

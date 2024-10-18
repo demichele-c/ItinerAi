@@ -86,8 +86,12 @@ const resolvers = {
             - "city": The name of the city.
             - "date": The planned date for the itinerary.
             - "time_frame": The specified time frame for the activities and dining.
-            - "interests": An array of the user's interests related to the experience.
-            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area.
+            - "interests": The user's interest.
+            - "celebration": The user's celebration.
+            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area each activity, must have an address, includes:
+            - "name": The name of the activity.
+                - "description": A brief description of the activity.
+                - "address": The address where the activity.
             - "dining_options": An array of dining recommendations, where each recommendation includes:
                 - "name": The name of the restaurant.
                 - "description": A brief description of the restaurant.
@@ -102,8 +106,30 @@ const resolvers = {
         ],
       });
 
-      console.log(response.choices[0].message);
+      // console.log(response.choices[0].message);
+      const messageContent = response.choices[0].message?.content;
+      const parsedMessage = JSON.parse(messageContent);
 
+      // try {
+      //   // If the content is a JSON string, parse it
+       
+        
+      //   console.log(parsedMessage);
+      // } catch (error) {
+      //   // If parsing fails, log the content directly
+      //   console.error('Error parsing JSON:', error);
+      //   console.log(messageContent);
+      // }
+      const newItinerary = await Itinerary.create({
+        user: "6711a2452121dbfde10e2861", // Reference to the user ID
+        city: parsedMessage.city,
+        date: parsedMessage.date,
+        time_frame: parsedMessage.time_frame,
+        celebration: parsedMessage.celebration,
+        activities: parsedMessage.activities, // This should be an array of objects
+        dining_options: parsedMessage.dining_options, // This should be an array of objects
+      });
+     console.log(newItinerary)
       return response.choices[0].message;
     },
 
