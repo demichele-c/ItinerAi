@@ -1,3 +1,4 @@
+// module.exports = typeDefs;
 const { gql } = require('apollo-server-express');
 
 // Define your GraphQL schema using gql
@@ -5,10 +6,11 @@ const typeDefs = gql`
   # Define the User type
   type User {
     username: String
-    password: String!
-    id: ID!
-    name: String!
-    email: String!
+    password: String
+    id: ID
+    name: String
+    email: String
+    isUpgraded: Boolean
   }
 
   type Auth {
@@ -24,8 +26,12 @@ const typeDefs = gql`
     location: String!
   }
 
+  type CheckoutSession {
+  id: String!
+}
+
   type aiResponse {
-    itLocation: String
+    content: String
   }
 
   # Define the Query type
@@ -39,9 +45,11 @@ const typeDefs = gql`
   # Define the Mutation type
   type Mutation {
     addItinerary(description: String!, date: String!, location: String!): Itinerary
-    addProfile(username: String!, email: String!, password: String!): Auth
+    addProfile(username: String!, email: String!, password: String!, name: String!): Auth
+    upgradeUser(userId: ID!, isUpgraded: Boolean): User
     login(email: String!, password: String!): Auth
-    aiResponse(itLocation: String): aiResponse
+    createCheckoutSession(userId: ID!): CheckoutSession
+    aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): aiResponse
   }
 `;
 

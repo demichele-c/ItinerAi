@@ -1,4 +1,4 @@
-const { Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const bcrypt = require('bcrypt');
 
@@ -18,6 +18,14 @@ const userSchema = new Schema({
     type: String,
     required: true,
     minlength: 5,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  isUpgraded: {
+    type: Boolean,
+    default: false,
   },
   itineraries: [
     {
