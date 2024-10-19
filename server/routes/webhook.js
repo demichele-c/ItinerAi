@@ -20,12 +20,10 @@ router.post('/', async (req, res) => {
     case 'checkout.session.completed':
       const session = event.data.object;
 
-      // Verify that the payment was successful
       if (session.payment_status === 'paid') {
         const userId = session.metadata.userId;
 
         try {
-          // Update the user in the database
           const updatedUser = await User.findByIdAndUpdate(
             userId,
             { isUpgraded: true },
@@ -41,7 +39,6 @@ router.post('/', async (req, res) => {
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  // Return a response to acknowledge receipt of the event
   res.json({ received: true });
 });
 
