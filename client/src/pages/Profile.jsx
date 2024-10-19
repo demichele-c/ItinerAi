@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from 'react';
+
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
@@ -36,22 +38,18 @@ const Profile = () => {
 
       // Call the mutation to create a checkout session
       const { data } = await stripePayment({ variables: { userId } });
-      const sessionId = data.createCheckoutSession.id;
+      const sessionId = data?.createCheckoutSession?.id;
 
-
-      if (data && data.createCheckoutSession && data.createCheckoutSession.id) {
-        const sessionId = data.createCheckoutSession.id;
-
-        // Redirect to Stripe Checkout
-        const { error } = await stripe.redirectToCheckout({
-          sessionId: sessionId,
-        });
+      if (sessionId) {
+        const { error } = await stripe.redirectToCheckout({ sessionId });
 
         if (error) {
           console.error('Stripe Checkout error:', error);
         }
       } else {
-        console.error('No session ID returned from the mutation');
+
+        console.error('No session ID received from Stripe');
+
       }
     } catch (error) {
       console.error('Error during checkout:', error);
@@ -66,7 +64,11 @@ const Profile = () => {
       const { data } = await confirmUpgrade({ variables: { sessionId } });
 
       // Store the new token in local storage
-      AuthService.login(data.confirmUpgrade.token);
+      if (data?.confirmUpgrade?.token) {
+        AuthService.login(data.confirmUpgrade.token);
+      } else {
+        console.error('No token received from upgrade confirmation');
+      }
     } catch (error) {
       console.error('Error confirming upgrade:', error);
     }
