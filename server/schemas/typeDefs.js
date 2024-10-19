@@ -50,6 +50,7 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
     createCheckoutSession(userId: ID!): CheckoutSession
     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): aiResponse
+    confirmUpgrade(sessionId: String!): Auth
   }
 `;
 

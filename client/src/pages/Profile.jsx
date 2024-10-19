@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
-import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
+import { STRIPE_PAYMENT, CONFIRM_UPGRADE } from '../utils/mutations';
+import AuthService from '../utils/auth';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -10,18 +11,26 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
+  const [confirmUpgrade] = useMutation(CONFIRM_UPGRADE);
 
-  // Use a real user ID from your MongoDB database
-  const user = { username: 'chuck_d', id: '6711a82fcb8f228d83135a39' }; // Replace with a valid ObjectId
+  // Fetch the user from AuthService and use the _id field
+  const user = AuthService.loggedIn() ? AuthService.getProfile() : null;
+  const userId = user ? user._id : null;
+
   const isUpgraded = user?.isUpgraded || false;
 
   const handleUpgrade = async () => {
+    if (!userId) {
+      console.error('User ID is not available');
+      return;
+    }
+
     setIsLoading(true);
     const stripe = await stripePromise;
 
     try {
       // Call the mutation to create a checkout session
-      const { data } = await stripePayment({ variables: { userId: user.id } });
+      const { data } = await stripePayment({ variables: { userId } });
       const sessionId = data.createCheckoutSession.id;
 
       const { error } = await stripe.redirectToCheckout({
@@ -34,11 +43,19 @@ const Profile = () => {
     } catch (error) {
       console.error('Error during checkout:', error);
     } finally {
-      console.log(`StripeRes: , ${data}`);
       setIsLoading(false);
     }
-    // If Payment is successful, call the upgradeUser mutation
-    //const [upgradeUser] = useMutation(UPGRADE_USER);
+  };
+
+  const handleConfirmUpgrade = async (sessionId) => {
+    try {
+      const { data } = await confirmUpgrade({ variables: { sessionId } });
+
+      // Store the new token in local storage
+      AuthService.login(data.confirmUpgrade.token);
+    } catch (error) {
+      console.error('Error confirming upgrade:', error);
+    }
   };
 
   return (

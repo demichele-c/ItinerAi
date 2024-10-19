@@ -39,12 +39,19 @@ const resolvers = {
       // Send token back to the front end
       return { token, user: profile };
     },
+    // Create a Stripe checkout session
     createCheckoutSession: async (parent, { userId }) => {
+      console.log('Received userId in resolver:', userId);
+
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [
           {
-            price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your price ID
+            price: 'price_1QBhvuE1Br6z80SV1IZ1pufb', // Replace with your actual price ID
             quantity: 1,
           },
         ],
@@ -54,17 +61,39 @@ const resolvers = {
         metadata: { userId },
       });
 
-      // Update user to upgraded
-      console.log(`UserId: , ${userId}`);
-      const user = await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-      console.log(`User: , ${user}`);
-      //await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-
+      console.log('Stripe session created:', session);
       return { id: session.id };
     },
-    // upgradeUser: async (parent, { userId, isUpgraded }) => {
-    //   return await User.findByIdAndUpdate({ isUpgraded }, { new: true });
-    // },
+
+    // Confirm upgrade after successful payment
+    confirmUpgrade: async (parent, { sessionId }) => {
+      const MAX_ATTEMPTS = 5;
+      let attempts = 0;
+      let session;
+    
+      while (attempts < MAX_ATTEMPTS) {
+        session = await stripe.checkout.sessions.retrieve(sessionId);
+    
+        if (session.payment_status === 'paid') {
+          const userId = session.metadata.userId;
+    
+          const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { isUpgraded: true },
+            { new: true }
+          );
+    
+          const token = signToken(updatedUser);
+          return { token, user: updatedUser };
+        }
+    
+        // Wait a bit before retrying
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        attempts++;
+      }
+    
+      throw new Error('Payment not confirmed within the expected timeframe.');
+    },
 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
