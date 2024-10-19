@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+
+import { useState, useEffect } from 'react';
+
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
+
 import { STRIPE_PAYMENT, CONFIRM_UPGRADE } from '../utils/mutations';
 import AuthService from '../utils/auth';
 
-// Load Stripe with Vite environment variable
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
   const [confirmUpgrade] = useMutation(CONFIRM_UPGRADE);
 
@@ -17,11 +21,13 @@ const Profile = () => {
   const user = AuthService.loggedIn() ? AuthService.getProfile() : null;
   const userId = user ? user._id : null;
 
+
   const isUpgraded = user?.isUpgraded || false;
 
   const handleUpgrade = async () => {
     if (!userId) {
       console.error('User ID is not available');
+
       return;
     }
 
@@ -29,23 +35,28 @@ const Profile = () => {
     const stripe = await stripePromise;
 
     try {
+
       // Call the mutation to create a checkout session
       const { data } = await stripePayment({ variables: { userId } });
       const sessionId = data?.createCheckoutSession?.id;
 
       if (sessionId) {
         const { error } = await stripe.redirectToCheckout({ sessionId });
+
         if (error) {
           console.error('Stripe Checkout error:', error);
         }
       } else {
+
         console.error('No session ID received from Stripe');
+
       }
     } catch (error) {
       console.error('Error during checkout:', error);
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const handleConfirmUpgrade = async (sessionId) => {
@@ -61,6 +72,7 @@ const Profile = () => {
     } catch (error) {
       console.error('Error confirming upgrade:', error);
     }
+
   };
 
   return (

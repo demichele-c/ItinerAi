@@ -31,7 +31,8 @@ const resolvers = {
     addProfile: async (parent, { username, email, password, name }) => {
       // create profile
       console.log("Sigup",username, email, password, name)
-      const profile = await User.create({ username, email, password, name });
+      const profile = await User.create({ username, email, password, name, isUpgraded: false });
+
       // Make a token
       const token = signToken(profile);
       console.log("Token",profile,token)
@@ -41,6 +42,7 @@ const resolvers = {
     },
     // Create a Stripe checkout session
     createCheckoutSession: async (parent, { userId }) => {
+
       console.log('Received userId in resolver:', userId);
 
       if (!userId) {
@@ -94,6 +96,7 @@ const resolvers = {
     
       throw new Error('Payment not confirmed within the expected timeframe.');
     },
+
 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);

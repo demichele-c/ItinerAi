@@ -25,7 +25,7 @@ const userSchema = new Schema({
   },
   isUpgraded: {
     type: Boolean,
-    default: false,
+  
   },
   itineraries: [
     {
