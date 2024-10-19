@@ -1,34 +1,27 @@
-
-import { useState, useEffect } from 'react';
-
-
+import React, { useState } from 'react';
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
-
 import { STRIPE_PAYMENT, CONFIRM_UPGRADE } from '../utils/mutations';
 import AuthService from '../utils/auth';
 
-
+// Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
   const [confirmUpgrade] = useMutation(CONFIRM_UPGRADE);
 
-  // Fetch the user from AuthService and use the _id field
-  const user = AuthService.loggedIn() ? AuthService.getProfile() : null;
-  const userId = user ? user._id : null;
+  // Fetch the logged-in user from AuthService and use the _id field
+  const currentUserProfile = AuthService.loggedIn() ? AuthService.getProfile() : null;
+  const userId = currentUserProfile ? currentUserProfile._id : null;
 
-
-  const isUpgraded = user?.isUpgraded || false;
+  const isUpgraded = currentUserProfile?.isUpgraded || false;
 
   const handleUpgrade = async () => {
     if (!userId) {
       console.error('User ID is not available');
-
       return;
     }
 
@@ -36,28 +29,23 @@ const Profile = () => {
     const stripe = await stripePromise;
 
     try {
-
       // Call the mutation to create a checkout session
       const { data } = await stripePayment({ variables: { userId } });
       const sessionId = data?.createCheckoutSession?.id;
 
       if (sessionId) {
         const { error } = await stripe.redirectToCheckout({ sessionId });
-
         if (error) {
           console.error('Stripe Checkout error:', error);
         }
       } else {
-
         console.error('No session ID received from Stripe');
-
       }
     } catch (error) {
       console.error('Error during checkout:', error);
     } finally {
       setIsLoading(false);
     }
-
   };
 
   const handleConfirmUpgrade = async (sessionId) => {
@@ -73,17 +61,16 @@ const Profile = () => {
     } catch (error) {
       console.error('Error confirming upgrade:', error);
     }
-
   };
 
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, p: 3, boxShadow: 2, borderRadius: 2, backgroundColor: '#f5f5f5' }}>
         <Typography variant="h4" align="center" gutterBottom>
-          {user?.username ? `${user.username}'s Profile` : 'Your Profile'}
+          {currentUserProfile?.username ? `${currentUserProfile.username}'s Profile` : 'Your Profile'}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Name:</strong> {user?.username || 'Name not available'}
+          <strong>Name:</strong> {currentUserProfile?.username || 'Name not available'}
         </Typography>
       </Box>
 
