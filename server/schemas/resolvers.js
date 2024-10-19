@@ -47,7 +47,7 @@ const resolvers = {
           payment_method_types: ['card'],
           line_items: [
             {
-              price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your actual price ID
+              price: 'price_1QBgqJE1Br6z80SV1QviNc34', // Replace with your actual price ID
               quantity: 1,
             },
           ],
