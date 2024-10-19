@@ -31,7 +31,8 @@ const resolvers = {
     addProfile: async (parent, { username, email, password, name }) => {
       // create profile
       console.log("Sigup",username, email, password, name)
-      const profile = await User.create({ username, email, password, name });
+      const profile = await User.create({ username, email, password, name, isUpgraded: false });
+
       // Make a token
       const token = signToken(profile);
       console.log("Token",profile,token)
@@ -40,32 +41,39 @@ const resolvers = {
       return { token, user: profile };
     },
     createCheckoutSession: async (parent, { userId }) => {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your price ID
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `${process.env.CLIENT_URL}/me`,
-        cancel_url: `${process.env.CLIENT_URL}/me`,
-        metadata: { userId },
-      });
-
-      // Update user to upgraded
-      console.log(`UserId: , ${userId}`);
-      const user = await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-      console.log(`User: , ${user}`);
-      //await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-
-      return { id: session.id };
+      try {
+        // Create the Stripe checkout session
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price: 'price_1QAZ6ZE1Br6z80SV5wPauWoa', // Replace with your actual price ID
+              quantity: 1,
+            },
+          ],
+          mode: 'payment',
+          success_url: `${process.env.CLIENT_URL}/me?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${process.env.CLIENT_URL}/me`,
+          metadata: { userId },
+        });
+    
+        // Log the session to verify the response
+        console.log('Stripe session created:', session);
+    
+        // Ensure the session ID is present
+        if (!session.id) {
+          console.error('Error: Stripe session ID is missing');
+          throw new Error('Stripe session creation failed, no ID returned');
+        }
+    
+        // Return the session ID
+        return { id: session.id };
+      } catch (error) {
+        console.error('Error creating checkout session:', error);
+        throw new Error('Failed to create checkout session');
+      }
     },
-    // upgradeUser: async (parent, { userId, isUpgraded }) => {
-    //   return await User.findByIdAndUpdate({ isUpgraded }, { new: true });
-    // },
-
+    
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
       const openai = new OpenAIApi({

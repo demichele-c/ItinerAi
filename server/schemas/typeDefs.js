@@ -27,8 +27,8 @@ const typeDefs = gql`
   }
 
   type CheckoutSession {
-    id: String!
-  }
+  id: String!
+}
 
   type aiResponse {
     content: String
