@@ -52,7 +52,7 @@ const resolvers = {
             },
           ],
           mode: 'payment',
-          success_url: `${process.env.CLIENT_URL}/me?session_id={CHECKOUT_SESSION_ID}`,
+          success_url: `${process.env.CLIENT_URL}/me`,
           cancel_url: `${process.env.CLIENT_URL}/me`,
           metadata: { userId },
         });
