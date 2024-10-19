@@ -40,40 +40,64 @@ const resolvers = {
       // Send token back to the front end
       return { token, user: profile };
     },
+    // Create a Stripe checkout session
     createCheckoutSession: async (parent, { userId }) => {
-      try {
-        // Create the Stripe checkout session
-        const session = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          line_items: [
-            {
-              price: 'price_1QBgqJE1Br6z80SV1QviNc34', // Replace with your actual price ID
-              quantity: 1,
-            },
-          ],
-          mode: 'payment',
-          success_url: `${process.env.CLIENT_URL}/me`,
-          cancel_url: `${process.env.CLIENT_URL}/me`,
-          metadata: { userId },
-        });
+
+      console.log('Received userId in resolver:', userId);
+
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: 'price_1QBhvuE1Br6z80SV1IZ1pufb', // Replace with your actual price ID
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/me`,
+        cancel_url: `${process.env.CLIENT_URL}/me`,
+        metadata: { userId },
+      });
+
+      console.log('Stripe session created:', session);
+      return { id: session.id };
+    },
+
+    // Confirm upgrade after successful payment
+    confirmUpgrade: async (parent, { sessionId }) => {
+      const MAX_ATTEMPTS = 5;
+      let attempts = 0;
+      let session;
     
-        // Log the session to verify the response
-        console.log('Stripe session created:', session);
+      while (attempts < MAX_ATTEMPTS) {
+        session = await stripe.checkout.sessions.retrieve(sessionId);
     
-        // Ensure the session ID is present
-        if (!session.id) {
-          console.error('Error: Stripe session ID is missing');
-          throw new Error('Stripe session creation failed, no ID returned');
+        if (session.payment_status === 'paid') {
+          const userId = session.metadata.userId;
+    
+          const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { isUpgraded: true },
+            { new: true }
+          );
+    
+          const token = signToken(updatedUser);
+          return { token, user: updatedUser };
         }
     
-        // Return the session ID
-        return { id: session.id };
-      } catch (error) {
-        console.error('Error creating checkout session:', error);
-        throw new Error('Failed to create checkout session');
+        // Wait a bit before retrying
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        attempts++;
       }
-    },
     
+      throw new Error('Payment not confirmed within the expected timeframe.');
+    },
+
+
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreference, itTimeRange }) => {
       // console.log(itLocation);
       const openai = new OpenAIApi({

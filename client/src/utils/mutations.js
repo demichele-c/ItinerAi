@@ -54,3 +54,15 @@ export const FETCH_ITINERARIES = gql`
     }
   }
 `;
+export const CONFIRM_UPGRADE = gql`
+  mutation confirmUpgrade($sessionId: String!) {
+    confirmUpgrade(sessionId: $sessionId) {
+      token
+      user {
+        username
+        isUpgraded
+        _id
+      }
+    }
+  }
+`;

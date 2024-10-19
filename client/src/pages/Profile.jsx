@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
-import { STRIPE_PAYMENT } from '../utils/mutations';
-import Auth from '../utils/auth';
-import jwtDecode from 'jwt-decode';
+
+import { STRIPE_PAYMENT, CONFIRM_UPGRADE } from '../utils/mutations';
+import AuthService from '../utils/auth';
+
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -12,40 +13,19 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
+  const [confirmUpgrade] = useMutation(CONFIRM_UPGRADE);
 
-  useEffect(() => {
-    // Get the token from local storage
-    const token = Auth.getToken();
-    if (token) {
-      try {
-        // Decode the token to extract user information
-        const decoded = jwtDecode(token);
-        console.log('Decoded token:', decoded);
+  // Fetch the user from AuthService and use the _id field
+  const user = AuthService.loggedIn() ? AuthService.getProfile() : null;
+  const userId = user ? user._id : null;
 
-        // Extract user data from the decoded token
-        const userData = {
-          id: decoded.data._id,
-          username: decoded.data.username,
-          isUpgraded: decoded.data.isUpgraded,
-        };
-
-        setUser(userData);
-      } catch (error) {
-        console.error('Error decoding token:', error);
-      }
-    }
-  }, []);
-
-  console.log('User:', user);
-
-  if (!user) return <p>Loading user data...</p>;
 
   const isUpgraded = user?.isUpgraded || false;
 
   const handleUpgrade = async () => {
-    console.log('User before upgrade:', user); // Log the user object before proceeding
-    if (!user?.id) {
-      console.error('User ID is missing');
+    if (!userId) {
+      console.error('User ID is not available');
+
       return;
     }
 
@@ -53,8 +33,11 @@ const Profile = () => {
     const stripe = await stripePromise;
 
     try {
-      // Call the mutation to create a checkout session with the correct userId
-      const { data } = await stripePayment({ variables: { userId: user.id } });
+
+      // Call the mutation to create a checkout session
+      const { data } = await stripePayment({ variables: { userId } });
+      const sessionId = data.createCheckoutSession.id;
+
 
       if (data && data.createCheckoutSession && data.createCheckoutSession.id) {
         const sessionId = data.createCheckoutSession.id;
@@ -75,6 +58,19 @@ const Profile = () => {
     } finally {
       setIsLoading(false);
     }
+
+  };
+
+  const handleConfirmUpgrade = async (sessionId) => {
+    try {
+      const { data } = await confirmUpgrade({ variables: { sessionId } });
+
+      // Store the new token in local storage
+      AuthService.login(data.confirmUpgrade.token);
+    } catch (error) {
+      console.error('Error confirming upgrade:', error);
+    }
+
   };
 
   return (

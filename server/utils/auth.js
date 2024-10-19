@@ -34,5 +34,5 @@ module.exports = {
   signToken: function ({ email, username, _id, isUpgraded }) {
     const payload = { email, username, _id, isUpgraded };
     return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
-  },
+},
 };
