@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
@@ -7,7 +8,6 @@ const { authMiddleware } = require('./utils/auth');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const bodyParser = require('body-parser'); // Needed for the raw body parser
 const webhookRoutes = require('./routes/webhook'); // Import the webhook route
-
 
 require('dotenv').config();
 const User = require('./models/User'); // Adjust the path as needed
@@ -25,16 +25,16 @@ const server = new ApolloServer({
 const startApolloServer = async () => {
   await server.start();
 
-  // Add middleware to parse URL-encoded data and JSON
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
-
-  // Add the Stripe webhook route
+  // **1. Mount the Webhook Route BEFORE Body Parsing Middleware**
   app.use(
     '/webhook',
     bodyParser.raw({ type: 'application/json' }), // Raw body parser for Stripe webhooks
     webhookRoutes
   );
+
+  // **2. Apply Body Parsing Middleware to All Other Routes**
+  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json());
 
   // Apollo GraphQL middleware
   app.use(
@@ -51,6 +51,12 @@ const startApolloServer = async () => {
       res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
   }
+
+  // Error handling middleware (optional but recommended)
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  });
 
   // Start the database and server
   db.once('open', () => {
