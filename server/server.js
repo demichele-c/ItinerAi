@@ -21,35 +21,6 @@ const server = new ApolloServer({
   resolvers,
 });
 
-// Use raw body for Stripe webhooks
-app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.log(`Webhook signature verification failed.`, err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  // Handle the checkout.session.completed event
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    const userId = session.metadata.userId;
-
-    // Update the user's isUpgraded status
-    try {
-      await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-      console.log(`User ${userId} upgraded successfully.`);
-    } catch (error) {
-      console.error(`Failed to upgrade user ${userId}:`, error);
-    }
-  }
-
-  res.json({ received: true });
-});
-
 // Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
   await server.start();
