@@ -25,12 +25,16 @@ const Header = () => {
           <Button color="inherit" component={Link} to="/" sx={{ mx: 1 }}>
             Home
           </Button>
-          <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
-            Profile
-          </Button>
-          <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
-            Itineraries
-          </Button>
+          {Auth.loggedIn() && (
+            <>
+              <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
+                Profile
+              </Button>
+              <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
+                Itineraries
+              </Button>
+            </>
+          )}
         </Box>
 
         <Box>
@@ -63,12 +67,16 @@ const Header = () => {
           <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1 }}>
             <Button>Home</Button>
           </MenuItem>
-          <MenuItem onClick={handleClose} component={Link} to="/me" sx={{ mx: 1 }}>
-            <Button>Profile</Button>
-          </MenuItem>
-          <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
-            <Button>Itineraries</Button>
-          </MenuItem>
+          {Auth.loggedIn() && (
+            <MenuItem onClick={handleClose} component={Link} to="/me" sx={{ mx: 1 }}>
+              <Button>Profile</Button>
+            </MenuItem>
+          )}
+          {Auth.loggedIn() && (
+            <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
+              <Button>Itineraries</Button>
+            </MenuItem>
+          )}
         </Menu>
       </Toolbar>
     </AppBar>
