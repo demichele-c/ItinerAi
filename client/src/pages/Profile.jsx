@@ -3,6 +3,7 @@ import { Typography, Button, Box, Alert, Container } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
 import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
+import Auth from '../utils/auth';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -10,18 +11,27 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
-
+  if (!Auth.loggedIn()) {
+    return <Typography variant="h4">Please log in to view this page</Typography>;
+  }
   // Use a real user ID from your MongoDB database
-  const user = { username: 'chuck_d', id: '6711a82fcb8f228d83135a39' }; // Replace with a valid ObjectId
-  const isUpgraded = user?.isUpgraded || false;
+  // const user = { username: 'chuck_d', id: '6711a82fcb8f228d83135a39' }; // Replace with a valid ObjectId
+
+  const user = Auth.getProfile();
+  const id = user?.data._id;
+  const isUpgraded = user?.data.isUpgraded;
+  console.log(`isUpgraded: ${isUpgraded}`);
+
+  console.log('User Object:', user);
+  console.log('IsUpgraded:', isUpgraded);
 
   const handleUpgrade = async () => {
     setIsLoading(true);
     const stripe = await stripePromise;
-
+    console.log(`Id: ${id}`);
     try {
       // Call the mutation to create a checkout session
-      const { data } = await stripePayment({ variables: { userId: user.id } });
+      const { data } = await stripePayment({ variables: { userId: id } });
       const sessionId = data.createCheckoutSession.id;
 
       const { error } = await stripe.redirectToCheckout({

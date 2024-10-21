@@ -20,12 +20,12 @@ const UserInputForm = ({ children }) => {
   const navigate = useNavigate();
 
   // Initialize state variables
-  const [location, setLocation] = useState('');
-  const [date, setDate] = useState('');
-  const [celebration, setCelebration] = useState('');
-  const [interests, setInterests] = useState('');
-  const [foodPreferences, setFoodPreferences] = useState('');
-  const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
+  const [location, setLocation] = useState('Port St. Lucie');
+  const [date, setDate] = useState('2024-10-31');
+  const [celebration, setCelebration] = useState('Birthday');
+  const [interests, setInterests] = useState('Nature');
+  const [foodPreferences, setFoodPreferences] = useState('Seafood');
+  const [timeRange, setTimeRange] = useState([16, 24]); // Time range from 12 AM to 12 AM next day
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,7 +69,16 @@ const UserInputForm = ({ children }) => {
       />
 
       {/* Celebration Dropdown */}
-      <TextField label="Celebration" value={celebration} onChange={(e) => setCelebration(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
+      <TextField
+        label="Celebration"
+        value={celebration}
+        onChange={(e) => setCelebration(e.target.value)}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        select
+        required
+      >
         <MenuItem value="Birthday">Birthday</MenuItem>
         <MenuItem value="Anniversary">Anniversary</MenuItem>
         <MenuItem value="Engagement">Engagement</MenuItem>
@@ -78,7 +87,16 @@ const UserInputForm = ({ children }) => {
       </TextField>
 
       {/* Interests Dropdown */}
-      <TextField label="Interests" value={interests} onChange={(e) => setInterests(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
+      <TextField
+        label="Interests"
+        value={interests}
+        onChange={(e) => setInterests(e.target.value)}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        select
+        required
+      >
         <MenuItem value="Art">Art</MenuItem>
         <MenuItem value="Music">Music</MenuItem>
         <MenuItem value="Sports">Sports</MenuItem>
