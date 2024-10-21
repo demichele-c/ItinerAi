@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography, Box, Button, Menu, MenuItem} from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
+import Auth from '../utils/auth';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -20,29 +21,34 @@ const Header = () => {
         <Typography align="left" variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
           ItinerAi
         </Typography>
-        <Box sx= {{ display: { xs: 'none', md: 'block'}}}>
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Button color="inherit" component={Link} to="/" sx={{ mx: 1 }}>
             Home
           </Button>
-          <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
-            Profile
-          </Button>
-          <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
-            Itineraries
-          </Button>
+          {Auth.loggedIn() && (
+            <>
+              <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
+                Profile
+              </Button>
+              <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
+                Itineraries
+              </Button>
+            </>
+          )}
         </Box>
-          
+
         <Box>
-          <Button color="inherit" component={Link} to="/login" sx={{ mx: 1 }}>
-            Login
-          </Button>
+          {Auth.loggedIn() ? (
+            <Button color="inherit" component={Link} onClick={() => Auth.logout()} sx={{ mx: 1 }}>
+              Logout
+            </Button>
+          ) : (
+            <Button color="inherit" component={Link} to="/login" sx={{ mx: 1 }}>
+              Login
+            </Button>
+          )}
         </Box>
-        <MenuIcon 
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleMenu}
-          sx={{ display: {md: 'none'} }}
-        />
+        <MenuIcon aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} sx={{ display: { md: 'none' } }} />
         <Menu
           id="menu-appbar"
           anchorEl={anchorEl}
@@ -58,21 +64,19 @@ const Header = () => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1}}>
-            <Button>
-              Home
-            </Button>
+          <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1 }}>
+            <Button>Home</Button>
           </MenuItem>
-          <MenuItem onClick={handleClose} component={Link} to="/me" sx={{ mx: 1 }}>
-            <Button>
-              Profile
-            </Button>
-          </MenuItem>
-          <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
-            <Button>
-              Itineraries
-            </Button>
-          </MenuItem>
+          {Auth.loggedIn() && (
+            <MenuItem onClick={handleClose} component={Link} to="/me" sx={{ mx: 1 }}>
+              <Button>Profile</Button>
+            </MenuItem>
+          )}
+          {Auth.loggedIn() && (
+            <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
+              <Button>Itineraries</Button>
+            </MenuItem>
+          )}
         </Menu>
       </Toolbar>
     </AppBar>
