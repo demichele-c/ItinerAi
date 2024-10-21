@@ -30,11 +30,11 @@ const resolvers = {
     // Register a profile
     addProfile: async (parent, { username, email, password, name }) => {
       // create profile
-      console.log("Sigup",username, email, password, name)
+      console.log('Sigup', username, email, password, name);
       const profile = await User.create({ username, email, password, name });
       // Make a token
       const token = signToken(profile);
-      console.log("Token",profile,token)
+      console.log('Token', profile, token);
 
       // Send token back to the front end
       return { token, user: profile };
@@ -56,8 +56,12 @@ const resolvers = {
 
       // Update user to upgraded
       console.log(`UserId: , ${userId}`);
+      if (!session) {
+        throw new Error('Failed to create Stripe session');
+      }
+
       const user = await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
-      console.log(`User: , ${user}`);
+      console.log(`User: ${user}`);
       //await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
 
       return { id: session.id };
@@ -112,8 +116,7 @@ const resolvers = {
 
       // try {
       //   // If the content is a JSON string, parse it
-       
-        
+
       //   console.log(parsedMessage);
       // } catch (error) {
       //   // If parsing fails, log the content directly
@@ -121,7 +124,7 @@ const resolvers = {
       //   console.log(messageContent);
       // }
       const newItinerary = await Itinerary.create({
-        user: "6711a2452121dbfde10e2861", // Reference to the user ID
+        user: '6711a2452121dbfde10e2861', // Reference to the user ID
         city: parsedMessage.city,
         date: parsedMessage.date,
         time_frame: parsedMessage.time_frame,
@@ -129,7 +132,7 @@ const resolvers = {
         activities: parsedMessage.activities, // This should be an array of objects
         dining_options: parsedMessage.dining_options, // This should be an array of objects
       });
-     console.log(newItinerary)
+      console.log(newItinerary);
       return response.choices[0].message;
     },
 
