@@ -19,7 +19,8 @@ const Profile = () => {
 
   const user = Auth.getProfile();
   const id = user?.data._id;
-  const isUpgraded = user?.isUpgraded;
+  const isUpgraded = user?.data.isUpgraded;
+  console.log(`isUpgraded: ${isUpgraded}`);
 
   console.log('User Object:', user);
   console.log('IsUpgraded:', isUpgraded);
