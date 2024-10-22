@@ -8,21 +8,13 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { ThemeProvider, createTheme, useColorScheme } from '@mui/material/styles';
+import { useColorScheme } from '@mui/material/styles';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   // color scheme variable
   const { mode, setMode } = useColorScheme();
-
-  // theme creation
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
-    },
-  });
-
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);

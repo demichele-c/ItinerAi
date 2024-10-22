@@ -17,9 +17,9 @@ const httpLink = createHttpLink({
 
 // theme creation
 const Theme = createTheme({
-  // palette: {
-  //   mode: 'dark',
-  // },
+  colorSchemes: {
+    dark: true,
+  },
 });
 
 // Construct request middleware that will attach the JWT token to every request as an `authorization` header
@@ -46,8 +46,7 @@ function App() {
     <ApolloProvider client={client}>
       {/* theme insert */}
       <ThemeProvider theme={Theme}>
-      <CssBaseline />
-      </ThemeProvider>
+      <CssBaseline>
       {/* end theme insert */}
       <div>
         <Header />
@@ -55,6 +54,8 @@ function App() {
           <Outlet />
         </div>
       </div>
+      </CssBaseline>
+      </ThemeProvider>
     </ApolloProvider>
   );
 }
