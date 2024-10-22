@@ -4,6 +4,7 @@ require('dotenv').config();
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
 const { signToken, AuthenticationError } = require('../utils/auth');
+const { format } = require('path');
 
 const resolvers = {
   Query: {
@@ -113,7 +114,7 @@ const resolvers = {
             Please return a detailed itinerary in JSON format but exclude the json\n.
             The JSON should include the following keys:
             - "city": The name of the city.
-            - "date": The date supplied for the itinerary.
+            - "date": The date supplied for the itinerary in the Month-Date-Year format.
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": The user's interest.
             - "celebration": The user's celebration.
@@ -127,7 +128,7 @@ const resolvers = {
                 - "address": The address of the restaurant.
                 - "phone": The phone number of the restaurant.
             If any key values are not found, please provide "N/A".
-            I would like to create an itinerary for the following itinerary date: Oct 31, 2024, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
+            I would like to create an itinerary for the following itinerary date: ${itDate}, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
             I'm interested in a ${itCelebration} dining experience ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
             Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
@@ -137,6 +138,7 @@ const resolvers = {
 
       const messageContent = response.choices[0].message?.content;
       const parsedMessage = JSON.parse(messageContent);
+      console.log(parsedMessage.date);
 
       if (isUpgraded) {
         const newItinerary = await Itinerary.create({
@@ -154,7 +156,6 @@ const resolvers = {
         const pushItinerary = await User.findByIdAndUpdate(user._id, { $push: { itineraries: newItinerary._id } }, { new: true });
         console.log('Itinerary Pushed to User:', pushItinerary);
       }
-
       return response.choices[0].message;
     },
     // The purpose of login is to verify that the user is logged in correctly

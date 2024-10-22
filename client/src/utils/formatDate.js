@@ -1,5 +1,7 @@
 // Function to format and update the date in the object
-function formatDate(dateString) {
+//stringDate = "Oct 31, 2024";
+//stringDate2 = "2024-10-31";
+const formatDate = (dateString) => {
   // Create a Date object from the provided date string
   const date = new Date(dateString);
 
@@ -12,5 +14,6 @@ function formatDate(dateString) {
   // Format the date as month-day-year
   const formattedDate = `${month}-${day}-${year}`;
   return formattedDate;
-}
+};
+
 export default formatDate;
