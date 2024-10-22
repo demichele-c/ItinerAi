@@ -93,7 +93,7 @@ const Header = () => {
             </MenuItem>
           )}
           {Auth.loggedIn() && (
-            <MenuItem onClick={handleClose} component={Link} to="/itineraries" sx={{ mx: 1 }}>
+            <MenuItem onClick={handleClose} component={Link} to="/saved-itineraries" sx={{ mx: 1 }}>
               <Button>Itineraries</Button>
             </MenuItem>
           )}

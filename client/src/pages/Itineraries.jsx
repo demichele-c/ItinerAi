@@ -28,6 +28,7 @@ const Itineraries = () => {
       console.log(`formParams: `, formParams);
       const { data } = await aiResponse({
         variables: {
+          itDate: formParams.itDate,
           itLocation: formParams.itLocation,
           itCelebration: formParams.itCelebration,
           itFoodPreferences: formParams.itFoodPreferences,
