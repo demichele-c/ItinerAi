@@ -1,5 +1,4 @@
-// src/components/ItineraryList.jsx
-
+import formatDate from '../utils/formatDate';
 import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 
 const ItineraryList = ({ itineraries }) => {
@@ -9,7 +8,7 @@ const ItineraryList = ({ itineraries }) => {
 
   // Destructure itinerary details
   const { city, date, time_frame, activities, dining_options } = itineraries;
-
+  const newDate = formatDate(date);
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       {/* Itinerary Details */}
@@ -18,7 +17,7 @@ const ItineraryList = ({ itineraries }) => {
       </Typography>
       {date && date !== 'N/A' && (
         <Typography variant="subtitle1" gutterBottom>
-          Date: {date}
+          Date: {newDate}
         </Typography>
       )}
       {time_frame && time_frame !== 'N/A' && (
@@ -26,10 +25,8 @@ const ItineraryList = ({ itineraries }) => {
           Time Frame: {time_frame}
         </Typography>
       )}
-
       <Divider sx={{ my: 2 }} />
-
-      {/* Activities
+      {/* Activities */}
       {activities && activities.length > 0 && (
         <>
           <Typography variant="h5" gutterBottom>
@@ -37,14 +34,17 @@ const ItineraryList = ({ itineraries }) => {
           </Typography>
           <List>
             {activities.map((activity, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={activity} />
-              </ListItem>
+              <Box key={index} sx={{ mb: 2 }}>
+                <Typography variant="h6">{activity.name}</Typography>
+                <Typography variant="body1">{activity.description}</Typography>
+                <Typography variant="body2">Address: {activity.address}</Typography>
+                {/* <Typography variant="body2">Phone: {restaurant.phone}</Typography> */}
+              </Box>
             ))}
           </List>
           <Divider sx={{ my: 2 }} />
         </>
-      )} */}
+      )}
 
       {/* Dining Options */}
       {dining_options && dining_options.length > 0 && (
