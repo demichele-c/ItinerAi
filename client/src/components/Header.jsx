@@ -3,9 +3,26 @@ import { AppBar, Toolbar, Typography, Box, Button, Menu, MenuItem } from '@mui/m
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import Auth from '../utils/auth';
+// importing theme components
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { ThemeProvider, createTheme, useColorScheme } from '@mui/material/styles';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  // color scheme variable
+  const { mode, setMode } = useColorScheme();
+
+  // theme creation
+  const theme = createTheme({
+    colorSchemes: {
+      dark: true,
+    },
+  });
+
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -18,9 +35,23 @@ const Header = () => {
   return (
     <AppBar position="sticky" sx={{ backgroundColor: '#1976d2' }}>
       <Toolbar>
-        <Typography align="left" variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
+        <Typography id="logo" align="left" variant="h6" color="inherit">
           ItinerAi
         </Typography>
+        {/* theme selection field */}
+        <FormControl align="left" sx={{ flexGrow:1 }}>
+        <RadioGroup
+          aria-labelledby="demo-theme-toggle"
+          name="theme-toggle"
+          row
+          value={mode}
+          onChange={(event) => setMode(event.target.value)}
+        >
+          <FormControlLabel value="light" control={<Radio />} label="Light" />
+          <FormControlLabel value="dark" control={<Radio />} label="Dark" />
+        </RadioGroup>
+        </FormControl>
+
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Button color="inherit" component={Link} to="/" sx={{ mx: 1 }}>
             Home
@@ -36,6 +67,7 @@ const Header = () => {
             </>
           )}
         </Box>
+
 
         <Box>
           {Auth.loggedIn() ? (
@@ -63,7 +95,7 @@ const Header = () => {
           }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
-        >
+          >
           <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1 }}>
             <Button>Home</Button>
           </MenuItem>

@@ -48,3 +48,7 @@ body {
 .read-the-docs {
   color: #888;
 }
+
+#logo {
+  padding-right: 8px;
+}
