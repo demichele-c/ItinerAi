@@ -14,7 +14,10 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   // color scheme variable
-  const { mode, setMode } = useColorScheme();
+  const { mode, setMode } = useColorScheme()
+  if (!mode) {
+    return null
+  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
