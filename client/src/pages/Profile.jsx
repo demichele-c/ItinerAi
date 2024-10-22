@@ -15,7 +15,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
   if (!Auth.loggedIn()) {
-    return <Typography variant="h4">Please log in to view this page</Typography>;
+    return <Typography variant="h4">Please{' '}<Link to="/login">log in or register </Link>to view this page.</Typography>;
   }
 
   // Use a real user ID from your MongoDB database
