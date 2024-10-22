@@ -4,6 +4,7 @@ require('dotenv').config();
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
 const { signToken, AuthenticationError } = require('../utils/auth');
+
 const resolvers = {
   Query: {
     // Fetch all users
@@ -47,6 +48,15 @@ const resolvers = {
       // Send token back to the front end
       return { token, user: profile };
     },
+    // Delete Single Itinerary
+    deleteItinerary: async (parent, { id }, context) => {
+      const delItinerary = await Itinerary.findByIdAndDelete({ _id: id });
+      if (!delItinerary) {
+        throw new Error('Failed to delete itinerary');
+      }
+      const delUserItineraryId = await User.findOneAndUpdate({ _id: context.user._id }, { $pull: { itineraries: id } }, { new: true });
+      return delUserItineraryId;
+    },
     // Create a Stripe checkout session
     createCheckoutSession: async (parent, { userId }) => {
       const session = await stripe.checkout.sessions.create({
@@ -80,20 +90,14 @@ const resolvers = {
     },
 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreferences, itTimeRange }, context) => {
+      // Create user from context, which is data from the token
       const user = context.user;
-      // Check if the user is authenticated
-      if (!user) {
-        throw new AuthenticationError('You need to be logged in.');
-      }
-      // Find the user in the database
-      const currentUser = await User.findById(user._id);
-      if (!currentUser) {
-        throw new AuthenticationError('User not found.');
-      }
-      // Check if the user has an upgraded account
-      if (!currentUser.isUpgraded) {
-        throw new AuthenticationError('You need to be an upgraded user to save itineraries.');
-      }
+
+      // Query logged in user to check if they are upgraded
+      const getUserInfo = await User.findById(user._id);
+      const isUpgraded = getUserInfo.isUpgraded;
+
+      // make connection with OpenAI library
       const openai = new OpenAIApi({
         api_key: process.env.OPENAIKEY,
       });
@@ -109,7 +113,7 @@ const resolvers = {
             Please return a detailed itinerary in JSON format but exclude the json\n.
             The JSON should include the following keys:
             - "city": The name of the city.
-            - "date": The planned date for the itinerary.
+            - "date": The date supplied for the itinerary.
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": The user's interest.
             - "celebration": The user's celebration.
@@ -123,47 +127,33 @@ const resolvers = {
                 - "address": The address of the restaurant.
                 - "phone": The phone number of the restaurant.
             If any key values are not found, please provide "N/A".
-            I am in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
-            I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
+            I would like to create an itinerary for the following itinerary date: Oct 31, 2024, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
+            I'm interested in a ${itCelebration} dining experience ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
             Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
           },
         ],
       });
-      // console.log(response.choices[0].message);
+
       const messageContent = response.choices[0].message?.content;
       const parsedMessage = JSON.parse(messageContent);
-      // try {
-      //   // If the content is a JSON string, parse it
-      //   console.log(parsedMessage);
-      // } catch (error) {
-      //   // If parsing fails, log the content directly
-      //   console.error('Error parsing JSON:', error);
-      //   console.log(messageContent);
-      // }
-      const newItinerary = await Itinerary.create({
-        user: user._id,
-        city: parsedMessage.city || 'N/A',
-        date: parsedMessage.date || 'N/A',
-        time_frame: parsedMessage.time_frame || 'N/A',
-        celebration: parsedMessage.celebration || 'N/A',
-        activities: parsedMessage.activities || [],
-        dining_options: parsedMessage.dining_options || [],
-      });
-      console.log('New Itinerary Created:', newItinerary); // Add this line
 
-      // MERN State Activity
-      // const order = new Order({ products });
+      if (isUpgraded) {
+        const newItinerary = await Itinerary.create({
+          user: user._id,
+          city: parsedMessage.city || 'N/A',
+          date: parsedMessage.date || 'N/A',
+          time_frame: parsedMessage.time_frame || 'N/A',
+          celebration: parsedMessage.celebration || 'N/A',
+          activities: parsedMessage.activities || [],
+          dining_options: parsedMessage.dining_options || [],
+        });
+        console.log('New Itinerary Created:', newItinerary); // Add this line
 
-      // await User.findByIdAndUpdate(context.user._id, {
-      //   $push: { orders: order },
-      // });
-
-      //Chucks Push To User
-      const pushItinerary = await User.findByIdAndUpdate(user._id, { $push: { itineraries: newItinerary._id } }, { new: true });
-      console.log('Itinerary Pushed to User:', pushItinerary);
-
-      //console.log(`UserID: ${user._id}`);
+        //Chucks Push To User
+        const pushItinerary = await User.findByIdAndUpdate(user._id, { $push: { itineraries: newItinerary._id } }, { new: true });
+        console.log('Itinerary Pushed to User:', pushItinerary);
+      }
 
       return response.choices[0].message;
     },

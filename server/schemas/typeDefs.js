@@ -63,6 +63,7 @@ const typeDefs = gql`
     createCheckoutSession(userId: ID!): CheckoutSession
     confirmUpgrade(sessionId: String!): Auth
     aiResponse(itLocation: String, itDate: String, itCelebration: String, itInterests: String, itFoodPreferences: String, itTimeRange: String): AIResponse
+    deleteItinerary(id: ID!): User
   }
 `;
 module.exports = typeDefs;
