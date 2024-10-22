@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import App from './App.jsx';
 import ErrorPage from './pages/ErrorPage';
@@ -8,34 +8,41 @@ import Itineraries from './pages/Itineraries.jsx';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
+import SavedItineraries from './pages/SavedItineraries';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        element: <Home />
-      }, {
+        element: <Home />,
+      },
+      {
         path: '/login',
-        element: <Login />
-      }, {
+        element: <Login />,
+      },
+      {
         path: '/itineraries',
-        element: <Itineraries />
-      }, {
-      }, {
+        element: <Itineraries />,
+      },
+      {},
+      {
         path: '/signup',
-        element: <Signup />
-      }, {
+        element: <Signup />,
+      },
+      {
         path: '/me',
-        element: <Profile />
-      }
-    ]
+        element: <Profile />,
+      },
+      {
+        path: '/saved-itineraries',
+        element: <SavedItineraries />,
+      },
+    ],
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
-)
+ReactDOM.createRoot(document.getElementById('root')).render(<RouterProvider router={router} />);

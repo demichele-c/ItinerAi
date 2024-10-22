@@ -54,3 +54,12 @@ export const FETCH_ITINERARIES = gql`
     }
   }
 `;
+
+export const DEL_SINGLE_ITINERARY = gql`
+  mutation DeleteItinerary($deleteItineraryId: ID!) {
+    deleteItinerary(id: $deleteItineraryId) {
+      username
+      email
+    }
+  }
+`;

@@ -14,10 +14,10 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   // color scheme variable
-  const { mode, setMode } = useColorScheme()
+  const { mode, setMode } = useColorScheme();
   if (!mode) {
-    return null
-  };
+    return null;
+  }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,17 +34,11 @@ const Header = () => {
           ItinerAi
         </Typography>
         {/* theme selection field */}
-        <FormControl align="left" sx={{ flexGrow:1 }}>
-        <RadioGroup
-          aria-labelledby="demo-theme-toggle"
-          name="theme-toggle"
-          row
-          value={mode}
-          onChange={(event) => setMode(event.target.value)}
-        >
-          <FormControlLabel value="light" control={<Radio />} label="Light" />
-          <FormControlLabel value="dark" control={<Radio />} label="Dark" />
-        </RadioGroup>
+        <FormControl align="left" sx={{ flexGrow: 1 }}>
+          <RadioGroup aria-labelledby="demo-theme-toggle" name="theme-toggle" row value={mode} onChange={(event) => setMode(event.target.value)}>
+            <FormControlLabel value="light" control={<Radio />} label="Light" />
+            <FormControlLabel value="dark" control={<Radio />} label="Dark" />
+          </RadioGroup>
         </FormControl>
 
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
@@ -56,13 +50,12 @@ const Header = () => {
               <Button color="inherit" component={Link} to="/me" sx={{ mx: 1 }}>
                 Profile
               </Button>
-              <Button color="inherit" component={Link} to="/itineraries" sx={{ mx: 1 }}>
+              <Button color="inherit" component={Link} to="/saved-itineraries" sx={{ mx: 1 }}>
                 Itineraries
               </Button>
             </>
           )}
         </Box>
-
 
         <Box>
           {Auth.loggedIn() ? (
@@ -90,7 +83,7 @@ const Header = () => {
           }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
-          >
+        >
           <MenuItem onClick={handleClose} component={Link} to="/" sx={{ mx: 1 }}>
             <Button>Home</Button>
           </MenuItem>

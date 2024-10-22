@@ -18,3 +18,26 @@ export const QUERY_USER = gql`
     }
   }
 `;
+
+export const SAVED_ITINERARIES = gql`
+  query MyItineraries {
+    myItineraries {
+      celebration
+      city
+      date
+      id
+      time_frame
+      activities {
+        address
+        description
+        name
+      }
+      dining_options {
+        name
+        description
+        address
+        phone
+      }
+    }
+  }
+`;

@@ -41,8 +41,6 @@ const Itineraries = () => {
     };
 
     fetchItineraries();
-
-    //console.log(itineraries);
   }, []);
 
   // If isLoading is true, display spinner while waiting for data

@@ -1,5 +1,4 @@
-// src/components/ItineraryList.jsx
-
+import formatDate from '../utils/formatDate';
 import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 
 const ItineraryList = ({ itineraries }) => {
@@ -9,7 +8,7 @@ const ItineraryList = ({ itineraries }) => {
 
   // Destructure itinerary details
   const { city, date, time_frame, activities, dining_options } = itineraries;
-
+  const newDate = formatDate(date);
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       {/* Itinerary Details */}
@@ -18,7 +17,7 @@ const ItineraryList = ({ itineraries }) => {
       </Typography>
       {date && date !== 'N/A' && (
         <Typography variant="subtitle1" gutterBottom>
-          Date: {date}
+          Date: {newDate}
         </Typography>
       )}
       {time_frame && time_frame !== 'N/A' && (
