@@ -29,11 +29,11 @@ const Profile = () => {
     variables: { userId: id },
     fetchPolicy: 'network-only', // Always fetch from server to get the latest data
   });
-  console.log(`Data: ${data}`);
+  console.log(`Data: `, data);
   const user = data?.user;
-  console.log(`User: ${user}`);
+  console.log(`User: `, user);
   const isUpgraded = user?.isUpgraded;
-  console.log(`IsUpgraded: ${isUpgraded}`);
+  console.log(`IsUpgraded:`, isUpgraded);
   console.log(`User: ${user}`);
 
   const handleUpgrade = async () => {
