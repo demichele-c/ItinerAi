@@ -1,6 +1,7 @@
 // Import the react hooks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import  AuthService  from '../utils/auth.js'
 //import { useMutation } from '@apollo/client';
 
 // Import the Material-UI components
@@ -148,11 +149,17 @@ const UserInputForm = ({ children }) => {
         From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
       </Typography>
 
-      {/* Submit Button */}
+         {/* Submit Button */}
+         {AuthService.loggedIn() ? 
       <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
         Generate Itinerary
       </Button>
+      :   <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
+      Please Log In or Register
+    </Button>
+      }
     </Box>
+      
   );
 };
 
