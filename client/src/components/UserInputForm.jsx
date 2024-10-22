@@ -155,7 +155,7 @@ const UserInputForm = ({ children }) => {
         Generate Itinerary
       </Button>
       :   <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
-      Please Log In or Register
+      Please Log In or Register To Make an Itinerary
     </Button>
       }
     </Box>
