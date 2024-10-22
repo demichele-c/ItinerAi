@@ -20,6 +20,7 @@ const SavedItineraries = () => {
     // Effect to run when data or loading state changes
     if (data && !loading) {
       console.log('Data received:', data);
+      refetch();
     }
   }, [data, loading]); // Dependency array: run effect when `data` or `loading` changes
 
