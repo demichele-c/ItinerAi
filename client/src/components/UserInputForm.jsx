@@ -46,12 +46,22 @@ const UserInputForm = ({ children }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
       {/* Location Dropdown */}
-      <TextField label="Location" value={location} onChange={(e) => setLocation(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
+      {/* <TextField label="Location" value={location} onChange={(e) => setLocation(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
         <MenuItem value="Philadelphia">Philadelphia</MenuItem>
         <MenuItem value="Waukesha">Waukesha</MenuItem>
         <MenuItem value="Port St. Lucie">Port St. Lucie</MenuItem>
         <MenuItem value="San Antonio">San Antonio</MenuItem>
-      </TextField>
+      </TextField> */}
+      <TextField
+        label="Location (City, State)"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        required
+        placeholder="e.g., New York, NY"
+      />
 
       {/* Date Picker */}
       <TextField

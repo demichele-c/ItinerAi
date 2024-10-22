@@ -4,6 +4,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { useMutation } from '@apollo/client';
 import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
+import { useQuery, gql } from '@apollo/client';
+import { QUERY_USER } from '../utils/queries';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -14,16 +16,25 @@ const Profile = () => {
   if (!Auth.loggedIn()) {
     return <Typography variant="h4">Please log in to view this page</Typography>;
   }
+
   // Use a real user ID from your MongoDB database
   // const user = { username: 'chuck_d', id: '6711a82fcb8f228d83135a39' }; // Replace with a valid ObjectId
 
-  const user = Auth.getProfile();
-  const id = user?.data._id;
-  const isUpgraded = user?.data.isUpgraded;
-  console.log(`isUpgraded: ${isUpgraded}`);
+  const jwt = Auth.getProfile();
+  const id = jwt?.data._id;
+  console.log(`Id: ${id}`);
 
-  console.log('User Object:', user);
-  console.log('IsUpgraded:', isUpgraded);
+  // GraphQL query to fetch user data
+  const { data, loading, error, refetch } = useQuery(QUERY_USER, {
+    variables: { userId: id },
+    fetchPolicy: 'network-only', // Always fetch from server to get the latest data
+  });
+  console.log(`Data: `, data);
+  const user = data?.user;
+  console.log(`User: `, user);
+  const isUpgraded = user?.isUpgraded;
+  console.log(`IsUpgraded:`, isUpgraded);
+  console.log(`User: ${user}`);
 
   const handleUpgrade = async () => {
     setIsLoading(true);
