@@ -6,6 +6,7 @@ import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 import { useQuery, gql } from '@apollo/client';
 import { QUERY_USER } from '../utils/queries';
+import { Link } from 'react-router-dom';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -14,7 +15,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripePayment] = useMutation(STRIPE_PAYMENT);
   if (!Auth.loggedIn()) {
-    return <Typography variant="h4">Please log in to view this page</Typography>;
+    return <Typography variant="h4">Please{' '}<Link to="/login">log in or register </Link>to view this page.</Typography>;
   }
 
   // Use a real user ID from your MongoDB database
