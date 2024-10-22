@@ -88,15 +88,15 @@ const resolvers = {
 
       return { id: session.id };
     },
-
+// Need to make itDate into the format of "2022-01-01"
+// ask tutor how to make itDate into the format from "2022-01-01" to "January 1, 2022"
+// Why when we go to itinerary it does not show the new itinerary and we have to refresh it 
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreferences, itTimeRange }, context) => {
       // Create user from context, which is data from the token
       const user = context.user;
-
       // Query logged in user to check if they are upgraded
       const getUserInfo = await User.findById(user._id);
       const isUpgraded = getUserInfo.isUpgraded;
-
       // make connection with OpenAI library
       const openai = new OpenAIApi({
         api_key: process.env.OPENAIKEY,
@@ -127,7 +127,7 @@ const resolvers = {
                 - "address": The address of the restaurant.
                 - "phone": The phone number of the restaurant.
             If any key values are not found, please provide "N/A".
-            I would like to create an itinerary for the following itinerary date: Oct 31, 2024, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
+            I would like to create an itinerary for the following itinerary date: ${itDate}, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
             I'm interested in a ${itCelebration} dining experience ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
             Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,

@@ -6,6 +6,7 @@ import { STRIPE_PAYMENT, UPGRADE_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 import { useQuery, gql } from '@apollo/client';
 import { QUERY_USER } from '../utils/queries';
+import { Link } from 'react-router-dom';
 
 // Load Stripe with Vite environment variable
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
