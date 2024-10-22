@@ -89,15 +89,12 @@ const resolvers = {
 
       return { id: session.id };
     },
-
     aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreferences, itTimeRange }, context) => {
       // Create user from context, which is data from the token
       const user = context.user;
-
       // Query logged in user to check if they are upgraded
       const getUserInfo = await User.findById(user._id);
       const isUpgraded = getUserInfo.isUpgraded;
-
       // make connection with OpenAI library
       const openai = new OpenAIApi({
         api_key: process.env.OPENAIKEY,
