@@ -3,12 +3,23 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
 
+// theme switcher stuff
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
 import Header from './components/Header';
 // import Footer from './components/Footer';
 
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
   uri: '/graphql',
+});
+
+// theme creation
+const Theme = createTheme({
+  // palette: {
+  //   mode: 'dark',
+  // },
 });
 
 // Construct request middleware that will attach the JWT token to every request as an `authorization` header
@@ -33,6 +44,11 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
+      {/* theme insert */}
+      <ThemeProvider theme={Theme}>
+      <CssBaseline />
+      </ThemeProvider>
+      {/* end theme insert */}
       <div>
         <Header />
         <div>
