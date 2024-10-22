@@ -26,10 +26,8 @@ const ItineraryList = ({ itineraries }) => {
           Time Frame: {time_frame}
         </Typography>
       )}
-
       <Divider sx={{ my: 2 }} />
-
-      {/* Activities
+      {/* Activities */}
       {activities && activities.length > 0 && (
         <>
           <Typography variant="h5" gutterBottom>
@@ -37,14 +35,17 @@ const ItineraryList = ({ itineraries }) => {
           </Typography>
           <List>
             {activities.map((activity, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={activity} />
-              </ListItem>
+              <Box key={index} sx={{ mb: 2 }}>
+                <Typography variant="h6">{activity.name}</Typography>
+                <Typography variant="body1">{activity.description}</Typography>
+                <Typography variant="body2">Address: {activity.address}</Typography>
+                {/* <Typography variant="body2">Phone: {restaurant.phone}</Typography> */}
+              </Box>
             ))}
           </List>
           <Divider sx={{ my: 2 }} />
         </>
-      )} */}
+      )}
 
       {/* Dining Options */}
       {dining_options && dining_options.length > 0 && (

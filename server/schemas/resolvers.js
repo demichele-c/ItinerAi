@@ -70,6 +70,9 @@ const resolvers = {
       }
 
       const user = await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
+      // destroy token
+      // 26 in MERN login.jsx
+
       console.log(`User: ${user}`);
       //await User.findByIdAndUpdate(userId, { isUpgraded: true }, { new: true });
 
@@ -102,6 +105,7 @@ const resolvers = {
           {
             role: 'system',
             content: `
+            
             Please return a detailed itinerary in JSON format but exclude the json\n.
             The JSON should include the following keys:
             - "city": The name of the city.
@@ -147,6 +151,20 @@ const resolvers = {
         dining_options: parsedMessage.dining_options || [],
       });
       console.log('New Itinerary Created:', newItinerary); // Add this line
+
+      // MERN State Activity
+      // const order = new Order({ products });
+
+      // await User.findByIdAndUpdate(context.user._id, {
+      //   $push: { orders: order },
+      // });
+
+      //Chucks Push To User
+      const pushItinerary = await User.findByIdAndUpdate(user._id, { $push: { itineraries: newItinerary._id } }, { new: true });
+      console.log('Itinerary Pushed to User:', pushItinerary);
+
+      //console.log(`UserID: ${user._id}`);
+
       return response.choices[0].message;
     },
     // The purpose of login is to verify that the user is logged in correctly
