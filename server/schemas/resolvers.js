@@ -100,7 +100,7 @@ const resolvers = {
         api_key: process.env.OPENAIKEY,
       });
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: process.env.OPENAI_MODEL,
         temperature: 0.2,
         max_tokens: 500,
         messages: [
@@ -111,7 +111,7 @@ const resolvers = {
             Please return a detailed itinerary in JSON format but exclude the json\n.
             The JSON should include the following keys:
             - "city": The name of the city.
-            - "date": The date supplied for the itinerary in the Month-Date-Year format.
+            - "date": The planned date for the itinerary.
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": The user's interest.
             - "celebration": The user's celebration.
@@ -125,8 +125,8 @@ const resolvers = {
                 - "address": The address of the restaurant.
                 - "phone": The phone number of the restaurant.
             If any key values are not found, please provide "N/A".
-            I would like to create an itinerary for the following itinerary date: ${itDate}, in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
-            I'm interested in a ${itCelebration} dining experience ${itTimeRange}.
+            I am in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
+            I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
             Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
           },

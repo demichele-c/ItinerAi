@@ -1,6 +1,7 @@
 // Import the react hooks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import  AuthService  from '../utils/auth.js'
 //import { useMutation } from '@apollo/client';
 
 // Import the Material-UI components
@@ -20,12 +21,12 @@ const UserInputForm = ({ children }) => {
   const navigate = useNavigate();
 
   // Initialize state variables
-  const [location, setLocation] = useState('Port St. Lucie');
-  const [date, setDate] = useState('2024-10-31');
-  const [celebration, setCelebration] = useState('Birthday');
-  const [interests, setInterests] = useState('Nature');
-  const [foodPreferences, setFoodPreferences] = useState('Seafood');
-  const [timeRange, setTimeRange] = useState([16, 24]); // Time range from 12 AM to 12 AM next day
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState('');
+  const [celebration, setCelebration] = useState('');
+  const [interests, setInterests] = useState('');
+  const [foodPreferences, setFoodPreferences] = useState('');
+  const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -148,11 +149,17 @@ const UserInputForm = ({ children }) => {
         From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
       </Typography>
 
-      {/* Submit Button */}
+         {/* Submit Button */}
+         {AuthService.loggedIn() ? 
       <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
         Generate Itinerary
       </Button>
+      :   <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
+      Please Log In or Register To Make an Itinerary
+    </Button>
+      }
     </Box>
+      
   );
 };
 
