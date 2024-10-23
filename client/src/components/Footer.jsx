@@ -5,8 +5,8 @@ import { useColorScheme } from '@mui/material/styles';
 
 // importing theme switch 
 import Switch from '@mui/material/Switch';
-
-
+// import LightModeIcon from '@mui/icons-material/LightMode';
+// import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 
 const Footer = () => {
   const [checked, setChecked] = useState(true);
@@ -23,10 +23,10 @@ const Footer = () => {
   }
   
   return (
-    <AppBar id="footer" position="relative" sx={{ 
-      bottom: 0, 
-      backgroundColor: '#1976d2' }}>
-      <Toolbar sx={{ justifyContent: 'flex-end' }}>
+    <AppBar id="footer" sx={{ 
+      backgroundColor: '#1976d2'
+      }}>
+      <Toolbar variant='dense'>
         <Typography align="left" sx={{ 
           flexGrow: 1,
           fontSize: 10,
@@ -37,6 +37,8 @@ const Footer = () => {
         <Switch 
           onChange={handleChange}
           checked={checked}
+          // checkedIcon={<LightModeIcon/>}
+          // icon={<DarkModeOutlinedIcon/> }
         />
       </Toolbar>
     </AppBar>
