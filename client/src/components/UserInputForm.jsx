@@ -21,12 +21,12 @@ const UserInputForm = ({ children }) => {
   const navigate = useNavigate();
 
   // Initialize state variables
-  const [location, setLocation] = useState('Port St. Lucie');
-  const [date, setDate] = useState('2024-10-31');
-  const [celebration, setCelebration] = useState('Birthday');
-  const [interests, setInterests] = useState('Nature');
-  const [foodPreferences, setFoodPreferences] = useState('Seafood');
-  const [timeRange, setTimeRange] = useState([16, 24]); // Time range from 12 AM to 12 AM next day
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState('');
+  const [celebration, setCelebration] = useState('');
+  const [interests, setInterests] = useState('');
+  const [foodPreferences, setFoodPreferences] = useState('');
+  const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
 
   const handleSubmit = (e) => {
     e.preventDefault();

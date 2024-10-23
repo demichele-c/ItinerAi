@@ -1,7 +1,7 @@
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { SAVED_ITINERARIES } from '../utils/queries';
 import { DEL_SINGLE_ITINERARY } from '../utils/mutations';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Container,
@@ -22,23 +22,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { red, grey } from '@mui/material/colors';
 
 const SavedItineraries = () => {
+  const client = useApolloClient();
   const { loading, data, refetch } = useQuery(SAVED_ITINERARIES);
   const itineraries = data?.myItineraries || [];
   const [deleteItinerary] = useMutation(DEL_SINGLE_ITINERARY);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
     if (data && !loading) {
       console.log('Data received:', data);
       refetch();
     }
-  }, [data, loading]);
+  });
+
+  // Effect to clear cache when an itinerary is deleted
+  useEffect(() => {
+    if (isDeleted) {
+      client.clearStore().then(() => {
+        refetch(); // Refetch the itineraries after clearing cache
+        setIsDeleted(false); // Reset the state
+      });
+    }
+  }, [isDeleted, client, refetch]);
 
   const handleDeleteItinerary = async (id) => {
     try {
       await deleteItinerary({
         variables: { deleteItineraryId: id },
       });
-      refetch();
+      setIsDeleted(true); // Trigger the cache clear and refetch
     } catch (error) {
       console.error('Error deleting itinerary:', error);
     }
@@ -187,68 +199,3 @@ const SavedItineraries = () => {
 };
 
 export default SavedItineraries;
-
-// const SavedItineraries = () => {
-//   const { loading, data } = useQuery(SAVED_ITINERARIES);
-//   const itineraries = data?.myItineraries || [];
-
-//   const [deleteItinerary] = useMutation(DEL_SINGLE_ITINERARY);
-
-//   function handleDeleteItinerary(id) {
-//     deleteItinerary({
-//       variables: { deleteItineraryId: id },
-//     });
-//     window.location.reload();
-//   }
-
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <Container>
-//       <Typography variant="h4">Saved Itineraries</Typography>
-//       <div>
-//         {itineraries.map((itinerary) => (
-//           <Accordion key={itinerary.id}>
-//             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-//               <Typography variant="h6" sx={{ width: '33%', flexShrink: 0 }}>
-//                 {itinerary.city}
-//               </Typography>
-//               <Typography variant="h6" sx={{ width: '60%', flexShrink: 0 }}>
-//                 {itinerary.date}
-//               </Typography>
-//             </AccordionSummary>
-
-//             <AccordionDetails>
-//               <ul>
-//                 {itinerary.activities.map((activity) => (
-//                   <li key={activity.name}>
-//                     <Typography variant="body1">{activity.name}</Typography>
-//                     <Typography variant="body2">{activity.description}</Typography>
-//                     <Typography variant="body2">{activity.address}</Typography>
-//                   </li>
-//                 ))}
-//               </ul>
-//               <ul>
-//                 {itinerary.dining_options.map((diningOption) => (
-//                   <li key={diningOption.name}>
-//                     <Typography variant="body1">{diningOption.name}</Typography>
-//                     <Typography variant="body2">{diningOption.description}</Typography>
-//                     <Typography variant="body2">{diningOption.address}</Typography>
-//                     <Typography variant="body2">{diningOption.phone}</Typography>
-//                   </li>
-//                 ))}
-//               </ul>
-//             </AccordionDetails>
-//             <AccordionActions>
-//               <Button onClick={() => handleDeleteItinerary(itinerary.id)}>Delete</Button>
-//             </AccordionActions>
-//           </Accordion>
-//         ))}
-//       </div>
-//     </Container>
-//   );
-// };
-
-// export default SavedItineraries;
