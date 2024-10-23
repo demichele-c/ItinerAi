@@ -1,5 +1,5 @@
 import formatDate from '../utils/formatDate';
-import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Box, Typography, List, Divider } from '@mui/material';
 
 const ItineraryList = ({ itineraries }) => {
   if (!itineraries) {
@@ -9,6 +9,7 @@ const ItineraryList = ({ itineraries }) => {
   // Destructure itinerary details
   const { city, date, time_frame, activities, dining_options } = itineraries;
   const newDate = formatDate(date);
+
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       {/* Itinerary Details */}
@@ -26,6 +27,7 @@ const ItineraryList = ({ itineraries }) => {
         </Typography>
       )}
       <Divider sx={{ my: 2 }} />
+
       {/* Activities */}
       {activities && activities.length > 0 && (
         <>
@@ -38,7 +40,11 @@ const ItineraryList = ({ itineraries }) => {
                 <Typography variant="h6">{activity.name}</Typography>
                 <Typography variant="body1">{activity.description}</Typography>
                 <Typography variant="body2">Address: {activity.address}</Typography>
-                {/* <Typography variant="body2">Phone: {restaurant.phone}</Typography> */}
+                {activity.link && activity.link !== 'N/A' && (
+                  <Typography component="div" variant="body2">
+                    📍 <a href={activity.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                  </Typography>
+                )}
               </Box>
             ))}
           </List>
@@ -58,6 +64,11 @@ const ItineraryList = ({ itineraries }) => {
               <Typography variant="body1">{restaurant.description}</Typography>
               <Typography variant="body2">Address: {restaurant.address}</Typography>
               <Typography variant="body2">Phone: {restaurant.phone}</Typography>
+              {restaurant.link && restaurant.link !== 'N/A' && (
+                <Typography component="div" variant="body2">
+                  📍 <a href={restaurant.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                </Typography>
+              )}
             </Box>
           ))}
         </>
