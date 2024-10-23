@@ -17,26 +17,28 @@ const typeDefs = gql`
   }
   # Define the Activity type
   type Activity {
-    name: String!
-    description: String!
-    address: String!
+    name: String
+    description: String
+    address: String
+    link: String
   }
   # Define the DiningOption type
   type DiningOption {
-    name: String!
-    description: String!
-    address: String!
-    phone: String!
+    name: String
+    description: String
+    address: String
+    phone: String
+    link: String
   }
   # Define the Itinerary type
   type Itinerary {
     id: ID!
     activities: [Activity]!
     celebration: String
-    city: String!
-    date: String!
+    city: String
+    date: String
     dining_options: [DiningOption]!
-    time_frame: String!
+    time_frame: String
     user: User!
   }
   # Define the AIResponse type

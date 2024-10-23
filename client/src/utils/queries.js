@@ -31,12 +31,14 @@ export const SAVED_ITINERARIES = gql`
         address
         description
         name
+        link
       }
       dining_options {
         name
         description
         address
         phone
+        link
       }
     }
   }
