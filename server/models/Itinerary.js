@@ -3,12 +3,14 @@ const activitySchema = new Schema({
   name: String,
   description: String,
   address: String,
+  link: String,
 });
 const diningOptionSchema = new Schema({
   name: String,
   description: String,
   address: String,
   phone: String,
+  link: String,
 });
 const itinerarySchema = new Schema({
   user: {
