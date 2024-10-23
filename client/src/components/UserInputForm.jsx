@@ -1,7 +1,7 @@
 // Import the react hooks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import  AuthService  from '../utils/auth.js'
+import AuthService from '../utils/auth.js'
 //import { useMutation } from '@apollo/client';
 
 // Import the Material-UI components
@@ -46,13 +46,6 @@ const UserInputForm = ({ children }) => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
-      {/* Location Dropdown */}
-      {/* <TextField label="Location" value={location} onChange={(e) => setLocation(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
-        <MenuItem value="Philadelphia">Philadelphia</MenuItem>
-        <MenuItem value="Waukesha">Waukesha</MenuItem>
-        <MenuItem value="Port St. Lucie">Port St. Lucie</MenuItem>
-        <MenuItem value="San Antonio">San Antonio</MenuItem>
-      </TextField> */}
       <TextField
         label="Location (City, State)"
         value={location}
@@ -113,6 +106,16 @@ const UserInputForm = ({ children }) => {
         <MenuItem value="Sports">Sports</MenuItem>
         <MenuItem value="Nature">Nature</MenuItem>
         <MenuItem value="Food">Food</MenuItem>
+        <MenuItem value="Movies">Movies</MenuItem>
+        <MenuItem value="Theater">Theater</MenuItem>
+        <MenuItem value="Shopping">Shopping</MenuItem>
+        <MenuItem value="Hiking">Hiking</MenuItem>
+        <MenuItem value="Fitness">Fitness</MenuItem>
+        <MenuItem value="Spa">Spa</MenuItem>
+        <MenuItem value="Gaming">Gaming</MenuItem>
+        <MenuItem value="Photography">Photography</MenuItem>
+        <MenuItem value="Books">Books</MenuItem>
+        <MenuItem value="History">History</MenuItem>
       </TextField>
 
       {/* Food Preferences Dropdown */}
@@ -131,6 +134,16 @@ const UserInputForm = ({ children }) => {
         <MenuItem value="Seafood">Seafood</MenuItem>
         <MenuItem value="Steakhouse">Steakhouse</MenuItem>
         <MenuItem value="Italian">Italian</MenuItem>
+        <MenuItem value="Japanese">Japanese</MenuItem>
+        <MenuItem value="Mexican">Mexican</MenuItem>
+        <MenuItem value="Chinese">Chinese</MenuItem>
+        <MenuItem value="French">French</MenuItem>
+        <MenuItem value="Thai">Thai</MenuItem>
+        <MenuItem value="Greek">Greek</MenuItem>
+        <MenuItem value="BBQ">BBQ</MenuItem>
+        <MenuItem value="Pizza">Pizza</MenuItem>
+        <MenuItem value="Mediterranean">Mediterranean</MenuItem>
+        <MenuItem value="Burgers">Burgers</MenuItem>
       </TextField>
 
       {/* Time Range Slider */}
@@ -149,17 +162,16 @@ const UserInputForm = ({ children }) => {
         From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
       </Typography>
 
-         {/* Submit Button */}
-         {AuthService.loggedIn() ? 
-      <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
-        Generate Itinerary
-      </Button>
-      :   <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
-      Please Log In or Register To Make an Itinerary
-    </Button>
+      {/* Submit Button */}
+      {AuthService.loggedIn() ? 
+        <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
+          Generate Itinerary
+        </Button>
+        : <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
+          Please Log In or Register To Make an Itinerary
+        </Button>
       }
     </Box>
-      
   );
 };
 
