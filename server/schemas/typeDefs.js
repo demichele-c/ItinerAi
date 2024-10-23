@@ -17,6 +17,7 @@ const typeDefs = gql`
   }
   # Define the Activity type
   type Activity {
+    time_frame: String
     name: String
     description: String
     address: String

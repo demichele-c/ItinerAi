@@ -1,10 +1,6 @@
-// Import the react hooks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../utils/auth.js'
-//import { useMutation } from '@apollo/client';
-
-// Import the Material-UI components
+import AuthService from '../utils/auth.js';
 import { TextField, Button, Box, MenuItem, Slider, Typography } from '@mui/material';
 
 // Function to convert slider value to time in 12-hour format
@@ -27,9 +23,20 @@ const UserInputForm = ({ children }) => {
   const [interests, setInterests] = useState('');
   const [foodPreferences, setFoodPreferences] = useState('');
   const [timeRange, setTimeRange] = useState([0, 24]); // Time range from 12 AM to 12 AM next day
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate location format (e.g., "New York, NY")
+    const locationPattern = /^[a-zA-Z\s]+,\s?[A-Za-z]{2}$/;
+    if (!locationPattern.test(location)) {
+      setError('Please enter a valid location in the format "City, State" (e.g., "New York, NY")');
+      return;
+    }
+
+    setError(''); // Clear any previous error message
+
     // Format the timeRange into a string
     const formattedTimeRange = `between ${formatTime(timeRange[0])} and ${formatTime(timeRange[1])}`;
     navigate('/itineraries', {
@@ -55,6 +62,8 @@ const UserInputForm = ({ children }) => {
         variant="outlined"
         required
         placeholder="e.g., New York, NY"
+        error={!!error}
+        helperText={error}
       />
 
       {/* Date Picker */}

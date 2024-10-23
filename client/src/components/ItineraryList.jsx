@@ -1,5 +1,5 @@
 import formatDate from '../utils/formatDate';
-import { Box, Typography, List, Divider } from '@mui/material';
+import { Box, Typography, List, Divider, Card, CardContent, CardActionArea } from '@mui/material';
 
 const ItineraryList = ({ itineraries }) => {
   if (!itineraries) {
@@ -11,22 +11,22 @@ const ItineraryList = ({ itineraries }) => {
   const newDate = formatDate(date);
 
   return (
-    <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
+    <Box sx={{ p: 3 }}>
       {/* Itinerary Details */}
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
         Itinerary for {city}
       </Typography>
       {date && date !== 'N/A' && (
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center' }}>
           Date: {newDate}
         </Typography>
       )}
       {time_frame && time_frame !== 'N/A' && (
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center' }}>
           Time Frame: {time_frame}
         </Typography>
       )}
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 3 }} />
 
       {/* Activities */}
       {activities && activities.length > 0 && (
@@ -36,19 +36,32 @@ const ItineraryList = ({ itineraries }) => {
           </Typography>
           <List>
             {activities.map((activity, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <Typography variant="h6">{activity.name}</Typography>
-                <Typography variant="body1">{activity.description}</Typography>
-                <Typography variant="body2">Address: {activity.address}</Typography>
-                {activity.link && activity.link !== 'N/A' && (
-                  <Typography component="div" variant="body2">
-                    📍 <a href={activity.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
-                  </Typography>
-                )}
-              </Box>
+              <Card key={index} sx={{ mb: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography variant="h6" color="primary">
+                      {activity.name}
+                    </Typography>
+                    <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                      {activity.time_frame}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      {activity.description}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Address: {activity.address}
+                    </Typography>
+                    {activity.link && activity.link !== 'N/A' && (
+                      <Typography component="div" variant="body2" sx={{ mt: 1 }}>
+                        📍 <a href={activity.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                      </Typography>
+                    )}
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             ))}
           </List>
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{ my: 3 }} />
         </>
       )}
 
@@ -59,17 +72,27 @@ const ItineraryList = ({ itineraries }) => {
             Dining Options
           </Typography>
           {dining_options.map((restaurant, index) => (
-            <Box key={index} sx={{ mb: 2 }}>
-              <Typography variant="h6">{restaurant.name}</Typography>
-              <Typography variant="body1">{restaurant.description}</Typography>
-              <Typography variant="body2">Address: {restaurant.address}</Typography>
-              <Typography variant="body2">Phone: {restaurant.phone}</Typography>
-              {restaurant.link && restaurant.link !== 'N/A' && (
-                <Typography component="div" variant="body2">
-                  📍 <a href={restaurant.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+            <Card key={index} sx={{ mb: 3, boxShadow: 3, borderRadius: 2 }}>
+              <CardContent>
+                <Typography variant="h6" color="primary">
+                  {restaurant.name}
                 </Typography>
-              )}
-            </Box>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {restaurant.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Address: {restaurant.address}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Phone: {restaurant.phone}
+                </Typography>
+                {restaurant.link && restaurant.link !== 'N/A' && (
+                  <Typography component="div" variant="body2" sx={{ mt: 1 }}>
+                    📍 <a href={restaurant.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
           ))}
         </>
       )}

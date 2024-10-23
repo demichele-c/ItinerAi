@@ -2,7 +2,6 @@ import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { SAVED_ITINERARIES } from '../utils/queries';
 import { DEL_SINGLE_ITINERARY } from '../utils/mutations';
 import { useState, useEffect } from 'react';
-
 import {
   Container,
   Typography,
@@ -20,6 +19,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red, grey } from '@mui/material/colors';
+import ItineraryList from '../components/ItineraryList';
 
 const SavedItineraries = () => {
   const client = useApolloClient();
@@ -33,7 +33,7 @@ const SavedItineraries = () => {
       console.log('Data received:', data);
       refetch();
     }
-  });
+  }, [data, loading, refetch]);
 
   // Effect to clear cache when an itinerary is deleted
   useEffect(() => {
@@ -57,7 +57,13 @@ const SavedItineraries = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h5" color="textSecondary">
+          Loading your saved adventures...
+        </Typography>
+      </Box>
+    );
   }
 
   return (
@@ -127,59 +133,7 @@ const SavedItineraries = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ padding: 3 }}>
-            <Typography variant="subtitle1" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500 }}>
-              Activities:
-            </Typography>
-            <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-              {itinerary.activities.map((activity) => (
-                <Grid item xs={12} key={activity.name}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      transition: '0.3s',
-                      '&:hover': {
-                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                      },
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="body1" sx={{ fontFamily: 'Roboto, sans-serif' }}>{activity.name}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{activity.description}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{activity.address}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-            <Typography variant="subtitle1" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500 }}>
-              Dining Options:
-            </Typography>
-            <Grid container spacing={2}>
-              {itinerary.dining_options.map((diningOption) => (
-                <Grid item xs={12} key={diningOption.name}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      transition: '0.3s',
-                      '&:hover': {
-                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                      },
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="body1" sx={{ fontFamily: 'Roboto, sans-serif' }}>{diningOption.name}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.description}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.address}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.phone}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            <ItineraryList itineraries={itinerary} />
           </AccordionDetails>
           <AccordionActions>
             <Box sx={{ marginLeft: 'auto' }}>

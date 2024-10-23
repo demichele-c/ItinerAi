@@ -28,6 +28,7 @@ export const SAVED_ITINERARIES = gql`
       id
       time_frame
       activities {
+        time_frame
         address
         description
         name

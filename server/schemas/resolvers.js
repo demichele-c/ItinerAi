@@ -115,8 +115,9 @@ const resolvers = {
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": The user's interest.
             - "celebration": The user's celebration.
-            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area each activity, must have an address, includes:
+            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area each activity must have an address. Includes dining option as one of the items in the activites array with a specific time frame, and "Listed Below" as the input for description and address, and N/A for the link :
             - "name": The name of the activity.
+                - "time_frame": A time frame for the provided activity.
                 - "description": A brief description of the activity.
                 - "address": The address where the activity.
                 - "link": The address of activity provided displayed as a link to the activty on Apple maps.
