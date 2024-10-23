@@ -1,4 +1,8 @@
-import { TextField, Button, Box, Typography, Tabs, Tab } from '@mui/material';
+import { TextField, Button, Box, Typography, Tabs, Tab, Alert } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Collapse from '@mui/material/Collapse';
+import AlertTitle from '@mui/material/AlertTitle';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_PROFILE, LOGIN_USER } from '../utils/mutations';
@@ -10,6 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [username, setuserName] = useState('');
+  const [err, setError] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const [addProfile, { error1, data1 }] = useMutation(ADD_PROFILE);
   const [login, { error, data }] = useMutation(LOGIN_USER);
@@ -32,6 +38,8 @@ const Login = () => {
         Auth.login(data.login.token);
       } catch (e) {
         console.error(e);
+        // Display Alert Box With Error Message
+        setError(true);
       }
     } else {
       userDetails.username = username;
@@ -73,6 +81,30 @@ const Login = () => {
           {tabValue === 0 ? 'Login' : 'Register'}
         </Button>
       </Box>
+      {err ? (
+        <Collapse in={open}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ mt: 2 }}
+          >
+            Invalid Email or Password
+          </Alert>
+        </Collapse>
+      ) : (
+        <> </>
+      )}
     </Box>
   );
 };
