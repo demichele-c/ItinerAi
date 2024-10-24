@@ -1,12 +1,7 @@
-// Import the react hooks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import  AuthService  from '../utils/auth.js'
-//import { useMutation } from '@apollo/client';
-
-// Import the Material-UI components
+import AuthService from '../utils/auth.js';
 import { TextField, Button, Box, MenuItem, Slider, Typography } from '@mui/material';
-
 // Function to convert slider value to time in 12-hour format
 const formatTime = (value) => {
   const hour = value % 24;
@@ -15,21 +10,30 @@ const formatTime = (value) => {
   const suffix = isAM ? 'AM' : 'PM';
   return `${formattedHour}:00 ${suffix}`;
 };
-
-const UserInputForm = ({ children }) => {
+const UserInputForm = () => {
   // Initialize the navigate hook
   const navigate = useNavigate();
-
   // Initialize state variables
-  const [location, setLocation] = useState('Port St. Lucie');
+  const [location, setLocation] = useState('Jupiter, FL');
   const [date, setDate] = useState('2024-10-31');
   const [celebration, setCelebration] = useState('Birthday');
-  const [interests, setInterests] = useState('Nature');
-  const [foodPreferences, setFoodPreferences] = useState('Seafood');
-  const [timeRange, setTimeRange] = useState([16, 24]); // Time range from 12 AM to 12 AM next day
+  const [interests, setInterests] = useState('Hiking');
+  const [foodPreferences, setFoodPreferences] = useState('Burgers');
+  const [secondFoodPreference, setSecondFoodPreference] = useState('Mexican');
+  const [timeRange, setTimeRange] = useState([10, 20]); // Time range from 12 AM to 12 AM next day
+  const [error, setError] = useState('');
+  // Check if the time range exceeds 5 hours
+  const timeRangeExceedsFiveHours = timeRange[1] - timeRange[0] > 5;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validate location format (e.g., "New York, NY")
+    const locationPattern = /^[a-zA-Z\s]+,\s?[A-Za-z]{2}$/;
+    if (!locationPattern.test(location)) {
+      setError('Please enter a valid location in the format "City, State" (e.g., "New York, NY")');
+      return;
+    }
+    setError(''); // Clear any previous error message
     // Format the timeRange into a string
     const formattedTimeRange = `between ${formatTime(timeRange[0])} and ${formatTime(timeRange[1])}`;
     navigate('/itineraries', {
@@ -39,20 +43,13 @@ const UserInputForm = ({ children }) => {
         itCelebration: celebration,
         itInterests: interests,
         itFoodPreferences: foodPreferences,
+        itSecondFoodPreference: timeRangeExceedsFiveHours ? secondFoodPreference : null,
         itTimeRange: formattedTimeRange,
       },
     });
   };
-
   return (
-    <Box border={1} component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
-      {/* Location Dropdown */}
-      {/* <TextField label="Location" value={location} onChange={(e) => setLocation(e.target.value)} fullWidth margin="normal" variant="outlined" select required>
-        <MenuItem value="Philadelphia">Philadelphia</MenuItem>
-        <MenuItem value="Waukesha">Waukesha</MenuItem>
-        <MenuItem value="Port St. Lucie">Port St. Lucie</MenuItem>
-        <MenuItem value="San Antonio">San Antonio</MenuItem>
-      </TextField> */}
+    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
       <TextField
         label="Location (City, State)"
         value={location}
@@ -62,8 +59,9 @@ const UserInputForm = ({ children }) => {
         variant="outlined"
         required
         placeholder="e.g., New York, NY"
+        error={!!error}
+        helperText={error}
       />
-
       {/* Date Picker */}
       <TextField
         label="Date"
@@ -78,7 +76,6 @@ const UserInputForm = ({ children }) => {
         variant="outlined"
         required
       />
-
       {/* Celebration Dropdown */}
       <TextField
         label="Celebration"
@@ -96,7 +93,6 @@ const UserInputForm = ({ children }) => {
         <MenuItem value="Just Because">Just Because</MenuItem>
         <MenuItem value="First Date">First Date</MenuItem>
       </TextField>
-
       {/* Interests Dropdown */}
       <TextField
         label="Interests"
@@ -113,8 +109,17 @@ const UserInputForm = ({ children }) => {
         <MenuItem value="Sports">Sports</MenuItem>
         <MenuItem value="Nature">Nature</MenuItem>
         <MenuItem value="Food">Food</MenuItem>
+        <MenuItem value="Movies">Movies</MenuItem>
+        <MenuItem value="Theater">Theater</MenuItem>
+        <MenuItem value="Shopping">Shopping</MenuItem>
+        <MenuItem value="Hiking">Hiking</MenuItem>
+        <MenuItem value="Fitness">Fitness</MenuItem>
+        <MenuItem value="Spa">Spa</MenuItem>
+        <MenuItem value="Gaming">Gaming</MenuItem>
+        <MenuItem value="Photography">Photography</MenuItem>
+        <MenuItem value="Books">Books</MenuItem>
+        <MenuItem value="History">History</MenuItem>
       </TextField>
-
       {/* Food Preferences Dropdown */}
       <TextField
         label="Food Preferences"
@@ -131,8 +136,46 @@ const UserInputForm = ({ children }) => {
         <MenuItem value="Seafood">Seafood</MenuItem>
         <MenuItem value="Steakhouse">Steakhouse</MenuItem>
         <MenuItem value="Italian">Italian</MenuItem>
+        <MenuItem value="Japanese">Japanese</MenuItem>
+        <MenuItem value="Mexican">Mexican</MenuItem>
+        <MenuItem value="Chinese">Chinese</MenuItem>
+        <MenuItem value="French">French</MenuItem>
+        <MenuItem value="Thai">Thai</MenuItem>
+        <MenuItem value="Greek">Greek</MenuItem>
+        <MenuItem value="BBQ">BBQ</MenuItem>
+        <MenuItem value="Pizza">Pizza</MenuItem>
+        <MenuItem value="Mediterranean">Mediterranean</MenuItem>
+        <MenuItem value="Burgers">Burgers</MenuItem>
       </TextField>
-
+      {/* Conditionally render the second dining option if time range exceeds 5 hours */}
+      {timeRangeExceedsFiveHours && (
+        <TextField
+          label="Second Food Preference"
+          value={secondFoodPreference}
+          onChange={(e) => setSecondFoodPreference(e.target.value)}
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          select
+          required
+        >
+          <MenuItem value="Vegan">Vegan</MenuItem>
+          <MenuItem value="Indian">Indian</MenuItem>
+          <MenuItem value="Seafood">Seafood</MenuItem>
+          <MenuItem value="Steakhouse">Steakhouse</MenuItem>
+          <MenuItem value="Italian">Italian</MenuItem>
+          <MenuItem value="Japanese">Japanese</MenuItem>
+          <MenuItem value="Mexican">Mexican</MenuItem>
+          <MenuItem value="Chinese">Chinese</MenuItem>
+          <MenuItem value="French">French</MenuItem>
+          <MenuItem value="Thai">Thai</MenuItem>
+          <MenuItem value="Greek">Greek</MenuItem>
+          <MenuItem value="BBQ">BBQ</MenuItem>
+          <MenuItem value="Pizza">Pizza</MenuItem>
+          <MenuItem value="Mediterranean">Mediterranean</MenuItem>
+          <MenuItem value="Burgers">Burgers</MenuItem>
+        </TextField>
+      )}
       {/* Time Range Slider */}
       <Typography gutterBottom>Date Time Frame</Typography>
       <Slider
@@ -148,18 +191,17 @@ const UserInputForm = ({ children }) => {
       <Typography>
         From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
       </Typography>
-
-         {/* Submit Button */}
-         {AuthService.loggedIn() ? 
-      <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
-        Generate Itinerary
-      </Button>
-      :   <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
-      Please Log In or Register To Make an Itinerary
-    </Button>
-      }
+      {/* Submit Button */}
+      {AuthService.loggedIn() ? (
+        <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>
+          Generate Itinerary
+        </Button>
+      ) : (
+        <Button variant="contained" color="primary" type="button" fullWidth sx={{ mt: 3 }} onClick={() => navigate('/login')}>
+          Please Log In or Register To Make an Itinerary
+        </Button>
+      )}
     </Box>
-      
   );
 };
 

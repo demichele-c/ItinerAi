@@ -1,19 +1,12 @@
 // Function to format and update the date in the object
-//stringDate = "Oct 31, 2024";
-//stringDate2 = "2024-10-31";
-const formatDate = (dateString) => {
-  // Create a Date object from the provided date string
-  const date = new Date(dateString);
 
-  // Get month, day, and year
-  // Note: JavaScript's Date object month is 0-indexed (0 = January, 11 = December)
-  const month = date.getMonth() + 1; // +1 to convert from 0-indexed to 1-indexed
-  const day = date.getDate();
-  const year = date.getFullYear();
+function convertDateFormat(dateString) {
+  // Split the date string into an array [YYYY, MM, DD]
+  var parts = dateString.split('-');
 
-  // Format the date as month-day-year
-  const formattedDate = `${month}-${day}-${year}`;
+  // Rearrange the parts to [MM, DD, YYYY]
+  var formattedDate = parts[1] + '-' + parts[2] + '-' + parts[0];
+
   return formattedDate;
-};
-
-export default formatDate;
+}
+export default convertDateFormat;

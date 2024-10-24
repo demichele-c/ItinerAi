@@ -28,15 +28,21 @@ export const SAVED_ITINERARIES = gql`
       id
       time_frame
       activities {
+        time_frame
         address
         description
         name
+        link
+        website
       }
       dining_options {
         name
         description
         address
         phone
+        link
+        website
+        rating
       }
     }
   }

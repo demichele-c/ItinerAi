@@ -1,8 +1,7 @@
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { SAVED_ITINERARIES } from '../utils/queries';
-import { DEL_SINGLE_ITINERARY } from '../utils/mutations';
-import { useEffect } from 'react';
-
+import { DEL_SINGLE_ITINERARY, DEL_SINGLE_ACTIVITY } from '../utils/mutations';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Typography,
@@ -20,32 +19,67 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red, grey } from '@mui/material/colors';
+import ItineraryList from '../components/ItineraryList';
 
 const SavedItineraries = () => {
+  const client = useApolloClient();
   const { loading, data, refetch } = useQuery(SAVED_ITINERARIES);
   const itineraries = data?.myItineraries || [];
   const [deleteItinerary] = useMutation(DEL_SINGLE_ITINERARY);
+  const [deleteActivity, { loading: deleteLoading, error: deleteError }] = useMutation(DEL_SINGLE_ACTIVITY);
+
+  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
     if (data && !loading) {
       console.log('Data received:', data);
       refetch();
     }
-  }, [data, loading]);
+  }, [data, loading, refetch]);
+
+  // Effect to clear cache when an itinerary is deleted
+  useEffect(() => {
+    if (isDeleted) {
+      client.clearStore().then(() => {
+        refetch(); // Refetch the itineraries after clearing cache
+        setIsDeleted(false); // Reset the state
+      });
+    }
+  }, [isDeleted, client, refetch]);
 
   const handleDeleteItinerary = async (id) => {
     try {
       await deleteItinerary({
         variables: { deleteItineraryId: id },
       });
-      refetch();
+      setIsDeleted(true); // Trigger the cache clear and refetch
     } catch (error) {
       console.error('Error deleting itinerary:', error);
     }
   };
 
+  const handleDeleteActivity = async (itineraryId, activityName) => {
+    try {
+      await deleteActivity({
+        variables: {
+          itineraryId,
+          activityName,
+        },
+      });
+      setIsDeleted(true); // Trigger the cache clear and refetch
+    } catch (err) {
+      console.error('Error deleting activity:', err);
+    }
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h5" color="textSecondary">
+          Loading your saved adventures...
+        </Typography>
+      </Box>
+    );
   }
 
   return (
@@ -63,10 +97,7 @@ const SavedItineraries = () => {
           },
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}
-        >
+        <Typography variant="h4" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}>
           Saved Itineraries
         </Typography>
       </Paper>
@@ -96,10 +127,7 @@ const SavedItineraries = () => {
               },
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{ width: '33%', flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}
-            >
+            <Typography variant="h6" sx={{ width: '33%', flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}>
               {itinerary.city}
             </Typography>
             <Typography
@@ -115,67 +143,11 @@ const SavedItineraries = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ padding: 3 }}>
-            <Typography variant="subtitle1" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500 }}>
-              Activities:
-            </Typography>
-            <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-              {itinerary.activities.map((activity) => (
-                <Grid item xs={12} key={activity.name}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      transition: '0.3s',
-                      '&:hover': {
-                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                      },
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="body1" sx={{ fontFamily: 'Roboto, sans-serif' }}>{activity.name}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{activity.description}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{activity.address}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-            <Typography variant="subtitle1" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500 }}>
-              Dining Options:
-            </Typography>
-            <Grid container spacing={2}>
-              {itinerary.dining_options.map((diningOption) => (
-                <Grid item xs={12} key={diningOption.name}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      transition: '0.3s',
-                      '&:hover': {
-                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                      },
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="body1" sx={{ fontFamily: 'Roboto, sans-serif' }}>{diningOption.name}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.description}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.address}</Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', color: 'text.secondary' }}>{diningOption.phone}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            <ItineraryList itineraries={itinerary} />
           </AccordionDetails>
           <AccordionActions>
             <Box sx={{ marginLeft: 'auto' }}>
-              <IconButton
-                aria-label="delete"
-                onClick={() => handleDeleteItinerary(itinerary.id)}
-                sx={{ color: red[500] }}
-              >
+              <IconButton aria-label="delete" onClick={() => handleDeleteItinerary(itinerary.id)} sx={{ color: red[500] }}>
                 <DeleteIcon />
               </IconButton>
             </Box>
@@ -187,68 +159,3 @@ const SavedItineraries = () => {
 };
 
 export default SavedItineraries;
-
-// const SavedItineraries = () => {
-//   const { loading, data } = useQuery(SAVED_ITINERARIES);
-//   const itineraries = data?.myItineraries || [];
-
-//   const [deleteItinerary] = useMutation(DEL_SINGLE_ITINERARY);
-
-//   function handleDeleteItinerary(id) {
-//     deleteItinerary({
-//       variables: { deleteItineraryId: id },
-//     });
-//     window.location.reload();
-//   }
-
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <Container>
-//       <Typography variant="h4">Saved Itineraries</Typography>
-//       <div>
-//         {itineraries.map((itinerary) => (
-//           <Accordion key={itinerary.id}>
-//             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-//               <Typography variant="h6" sx={{ width: '33%', flexShrink: 0 }}>
-//                 {itinerary.city}
-//               </Typography>
-//               <Typography variant="h6" sx={{ width: '60%', flexShrink: 0 }}>
-//                 {itinerary.date}
-//               </Typography>
-//             </AccordionSummary>
-
-//             <AccordionDetails>
-//               <ul>
-//                 {itinerary.activities.map((activity) => (
-//                   <li key={activity.name}>
-//                     <Typography variant="body1">{activity.name}</Typography>
-//                     <Typography variant="body2">{activity.description}</Typography>
-//                     <Typography variant="body2">{activity.address}</Typography>
-//                   </li>
-//                 ))}
-//               </ul>
-//               <ul>
-//                 {itinerary.dining_options.map((diningOption) => (
-//                   <li key={diningOption.name}>
-//                     <Typography variant="body1">{diningOption.name}</Typography>
-//                     <Typography variant="body2">{diningOption.description}</Typography>
-//                     <Typography variant="body2">{diningOption.address}</Typography>
-//                     <Typography variant="body2">{diningOption.phone}</Typography>
-//                   </li>
-//                 ))}
-//               </ul>
-//             </AccordionDetails>
-//             <AccordionActions>
-//               <Button onClick={() => handleDeleteItinerary(itinerary.id)}>Delete</Button>
-//             </AccordionActions>
-//           </Accordion>
-//         ))}
-//       </div>
-//     </Container>
-//   );
-// };
-
-// export default SavedItineraries;

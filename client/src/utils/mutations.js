@@ -41,13 +41,22 @@ export const UPGRADE_USER = gql`
 `;
 
 export const FETCH_ITINERARIES = gql`
-  mutation aiResponse($itLocation: String, $itDate: String, $itCelebration: String, $itInterests: String, $itFoodPreferences: String, $itTimeRange: String) {
+  mutation aiResponse(
+    $itLocation: String
+    $itDate: String
+    $itCelebration: String
+    $itInterests: String
+    $itFoodPreferences: String
+    $itSecondFoodPreference: String
+    $itTimeRange: String
+  ) {
     aiResponse(
       itLocation: $itLocation
       itDate: $itDate
       itCelebration: $itCelebration
       itInterests: $itInterests
       itFoodPreferences: $itFoodPreferences
+      itSecondFoodPreference: $itSecondFoodPreference
       itTimeRange: $itTimeRange
     ) {
       content
@@ -60,6 +69,17 @@ export const DEL_SINGLE_ITINERARY = gql`
     deleteItinerary(id: $deleteItineraryId) {
       username
       email
+    }
+  }
+`;
+
+export const DEL_SINGLE_ACTIVITY = gql`
+  mutation DeleteActivity($itineraryId: ID!, $activityName: String!) {
+    deleteActivity(itineraryId: $itineraryId, activityName: $activityName) {
+      activities {
+        name
+        description
+      }
     }
   }
 `;
