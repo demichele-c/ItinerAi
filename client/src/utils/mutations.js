@@ -41,13 +41,22 @@ export const UPGRADE_USER = gql`
 `;
 
 export const FETCH_ITINERARIES = gql`
-  mutation aiResponse($itLocation: String, $itDate: String, $itCelebration: String, $itInterests: String, $itFoodPreferences: String, $itTimeRange: String) {
+  mutation aiResponse(
+    $itLocation: String
+    $itDate: String
+    $itCelebration: String
+    $itInterests: String
+    $itFoodPreferences: String
+    $itSecondFoodPreference: String
+    $itTimeRange: String
+  ) {
     aiResponse(
       itLocation: $itLocation
       itDate: $itDate
       itCelebration: $itCelebration
       itInterests: $itInterests
       itFoodPreferences: $itFoodPreferences
+      itSecondFoodPreference: $itSecondFoodPreference
       itTimeRange: $itTimeRange
     ) {
       content

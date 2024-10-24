@@ -89,7 +89,9 @@ const resolvers = {
 
       return { id: session.id };
     },
-    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreferences, itTimeRange }, context) => {
+    aiResponse: async (parent, { itLocation, itDate, itCelebration, itInterests, itFoodPreferences, itSecondFoodPreference, itTimeRange }, context) => {
+      console.log('2nd Food Preference:', itSecondFoodPreference);
+
       // Create user from context, which is data from the token
       const user = context.user;
       // Query logged in user to check if they are upgraded
@@ -106,35 +108,52 @@ const resolvers = {
         messages: [
           {
             role: 'system',
-            content: `
-            
-            Please return a detailed itinerary in JSON format but exclude the json\n. Make sure the response is vaild JSON.
-            The JSON should include the following keys:
-            - "city": The name of the city.
-            - "date": The planned date for the itinerary.
-            - "time_frame": The specified time frame for the activities and dining.
-            - "interests": The user's interest.
-            - "celebration": The user's celebration.
-            - "activities": An array of suggested activities to do on  within the specified time frame based on my interests and celebration based on current events going on in area each activity must have an address. Includes dining options as two items in the activites array unless time frame is less than 5.5 hours with ${itFoodPreferences} Cusine as the name, "Choices in Dining Options" as the input for description, and N/A for the link and address for the dining options only. Additonally if the time frame for date is less than 5.5 hours include only one dining option. The activities array should include:
-            - "name": The name of the activity.
-                - "time_frame": A time frame for the provided activity.
-                - "website": A website url giving booking instructions or general information about the activity.
-                - "description": A brief description of the activity.
-                - "address": The address where the activity.
-                - "link": The address of activity provided displayed as a link to the activty on Apple maps.
-            - "dining_options": An array of dining recommendations, where each recommendation includes:
-                - "name": The name of the restaurant.
-                - "website": The url of the restaurant's yelp listing.
-                - "rating": The rating of restaurant on yelp. Return "(number of stars) Stars on Yelp".
-                - "description": A brief description of the restaurant.
-                - "address": The address of the restaurant.
-                - "phone": The phone number of the restaurant.
-                 - "link": The address of activity provided displayed as a link to the activty on Apple maps.
-            If any key values are not found, please provide "N/A".
-            I am in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
-            I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
-            Additionally, my interests include ${itInterests}.
-            Please provide a detailed itinerary including four dining options a list of activities  based on my  ${itInterests} and ${itCelebration} on ${itDate}.`,
+            content: `Please return a detailed itinerary in JSON format but exclude the JSON syntax. Ensure the response is valid JSON.
+
+The JSON should include the following keys:
+- "city": The name of the city.
+- "date": The planned date for the itinerary.
+- "time_frame": The specified time frame for the activities and dining.
+- "interests": The user's interests.
+- "celebration": The user's celebration.
+- "activities": An array of suggested activities to do within the specified time frame based on the user's interests and celebration, including current events in the area. Each activity must have an address. The activities array should include:
+  - "name": The name of the activity.
+  - "time_frame": A time frame for the provided activity.
+  - "website": A website URL providing booking instructions or general information about the activity.
+  - "description": A brief description of the activity.
+  - "address": The address where the activity takes place.
+  - "link": A link to the activity location on Apple Maps.
+- If the total "time_frame" exceeds 5 hours, include multiple dining activities in the itinerary. For each dining activity, add an item to the activities array with:
+  - "name": The name of the cuisine, e.g., "${itFoodPreferences} Cuisine".
+  - "description": "Choices in Dining Options".
+  - "time_frame": The allocated time slot for the meal.
+  - "website": "N/A".
+  - "address": "N/A".
+  - "link": "N/A".
+- If "${itSecondFoodPreference}" is not null and the time range is greater than 5 hours, add an additional dining activity to the activities array with:
+  - "name": The name of the cuisine, e.g., "${itSecondFoodPreference} Cuisine".
+  - "description": "Choices in Dining Options".
+  - "time_frame": The allocated time slot for the second meal.
+  - "website": "N/A".
+  - "address": "N/A".
+  - "link": "N/A".
+- Ensure that each dining activity corresponds to a different restaurant from the "dining_options" list, without repeating any restaurants.
+- "dining_options": An array of dining recommendations, where each recommendation includes:
+  - "name": The name of the restaurant.
+  - "website": The URL of the restaurant on Yelp.
+  - "rating": The rating of the restaurant on Yelp, formatted as "(number of stars) Stars on Yelp".
+  - "description": A brief description of the restaurant.
+  - "address": The address of the restaurant.
+  - "phone": The phone number of the restaurant.
+  - "link": A link to the restaurant location on Apple Maps.
+
+If any key values are not found, please provide "N/A".
+
+User Inputs:
+- I am in ${itLocation} and I'm looking for places to have a ${itFoodPreferences} meal. If the time range ${itTimeRange} is greater than 5 hours, please include a second ${itSecondFoodPreference} meal.
+- I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
+- Additionally, my interests include ${itInterests}.
+- Please provide a detailed itinerary including four dining options and a list of activities based on my ${itInterests} and ${itCelebration} on ${itDate}.`,
           },
         ],
       });
@@ -191,4 +210,3 @@ const resolvers = {
   },
 };
 module.exports = resolvers;
-

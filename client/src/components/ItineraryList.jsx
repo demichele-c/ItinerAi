@@ -1,4 +1,4 @@
-import formatDate from '../utils/formatDate';
+import convertDateFormat from '../utils/formatDate';
 import { Box, Typography, List, Divider, Card, CardContent, CardActionArea } from '@mui/material';
 
 const ItineraryList = ({ itineraries }) => {
@@ -8,7 +8,7 @@ const ItineraryList = ({ itineraries }) => {
 
   // Destructure itinerary details
   const { city, date, time_frame, activities, dining_options } = itineraries;
-  const newDate = formatDate(date);
+  const newDate = convertDateFormat(date);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -58,11 +58,14 @@ const ItineraryList = ({ itineraries }) => {
                       {activity.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      {activity.address && activity.address !== "N/A" ? `Address: ${activity.address}` : <></>}
+                      {activity.address && activity.address !== 'N/A' ? `Address: ${activity.address}` : <></>}
                     </Typography>
                     {activity.link && activity.link !== 'N/A' && (
                       <Typography component="div" variant="body2" sx={{ mt: 1 }}>
-                        📍 <a href={activity.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                        📍{' '}
+                        <a href={activity.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>
+                          Apple Maps Location
+                        </a>
                       </Typography>
                     )}
                   </CardContent>
@@ -112,7 +115,10 @@ const ItineraryList = ({ itineraries }) => {
                 </Typography>
                 {restaurant.link && restaurant.link !== 'N/A' && (
                   <Typography component="div" variant="body2" sx={{ mt: 1 }}>
-                    📍 <a href={restaurant.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>Apple Maps Location</a>
+                    📍{' '}
+                    <a href={restaurant.link} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'none' }}>
+                      Apple Maps Location
+                    </a>
                   </Typography>
                 )}
               </CardContent>

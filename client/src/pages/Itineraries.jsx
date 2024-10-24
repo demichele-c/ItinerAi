@@ -47,6 +47,7 @@ const Itineraries = () => {
           itLocation: formParams.itLocation,
           itCelebration: formParams.itCelebration,
           itFoodPreferences: formParams.itFoodPreferences,
+          itSecondFoodPreference: formParams.itSecondFoodPreference,
           itInterests: formParams.itInterests,
           itTimeRange: formParams.itTimeRange,
         },
