@@ -33,6 +33,7 @@ export const SAVED_ITINERARIES = gql`
         description
         name
         link
+        website
       }
       dining_options {
         name
@@ -40,6 +41,8 @@ export const SAVED_ITINERARIES = gql`
         address
         phone
         link
+        website
+        rating
       }
     }
   }

@@ -5,13 +5,16 @@ const activitySchema = new Schema({
   description: String,
   address: String,
   link: String,
+  website: String,
 });
 const diningOptionSchema = new Schema({
   name: String,
   description: String,
+  rating: String,
   address: String,
   phone: String,
   link: String,
+  website: String,
 });
 const itinerarySchema = new Schema({
   user: {

@@ -102,7 +102,7 @@ const resolvers = {
       const response = await openai.chat.completions.create({
         model: process.env.OPENAI_MODEL,
         temperature: 0.2,
-        max_tokens: 1000,
+        max_tokens: 1500,
         messages: [
           {
             role: 'system',
@@ -115,14 +115,17 @@ const resolvers = {
             - "time_frame": The specified time frame for the activities and dining.
             - "interests": The user's interest.
             - "celebration": The user's celebration.
-            - "activities": An array of suggested activities to do within the specified time frame based on my interests and celebration based on current events going on in area each activity must have an address. Includes dining option as one of the items in the activites array with a specific time frame, and "Listed Below" as the input for description and address, and N/A for the link :
+            - "activities": An array of suggested activities to do on  within the specified time frame based on my interests and celebration based on current events going on in area each activity must have an address. Includes dining options as two items in the activites array unless time frame is less than 5.5 hours with ${itFoodPreferences} Cusine as the name, "Choices in Dining Options" as the input for description, and N/A for the link and address for the dining options only. Additonally if the time frame for date is less than 5.5 hours include only one dining option. The activities array should include:
             - "name": The name of the activity.
                 - "time_frame": A time frame for the provided activity.
+                - "website": A website url giving booking instructions or general information about the activity.
                 - "description": A brief description of the activity.
                 - "address": The address where the activity.
                 - "link": The address of activity provided displayed as a link to the activty on Apple maps.
             - "dining_options": An array of dining recommendations, where each recommendation includes:
                 - "name": The name of the restaurant.
+                - "website": The url of the restaurant's yelp listing.
+                - "rating": The rating of restaurant on yelp. Return "(number of stars) Stars on Yelp".
                 - "description": A brief description of the restaurant.
                 - "address": The address of the restaurant.
                 - "phone": The phone number of the restaurant.
@@ -131,7 +134,7 @@ const resolvers = {
             I am in ${itLocation} and I'm looking for a place to have ${itFoodPreferences} food.
             I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
             Additionally, my interests include ${itInterests}.
-            Please provide a detailed itinerary including three dining options and a list of activities based on my  ${itInterests} and ${itCelebration}.`,
+            Please provide a detailed itinerary including four dining options a list of activities  based on my  ${itInterests} and ${itCelebration} on ${itDate}.`,
           },
         ],
       });
