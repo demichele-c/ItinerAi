@@ -58,6 +58,30 @@ const resolvers = {
       const delUserItineraryId = await User.findOneAndUpdate({ _id: context.user._id }, { $pull: { itineraries: id } }, { new: true });
       return delUserItineraryId;
     },
+
+    // Delete an activity from an itinerary
+    deleteActivity: async (_, { itineraryId, activityName }) => {
+      try {
+        // Find the itinerary by ID
+        const itinerary = await Itinerary.findById(itineraryId);
+        if (!itinerary) {
+          throw new Error('Itinerary not found');
+        }
+        // Check if an activity with the given name exists
+        const activityExists = itinerary.activities.some((activity) => activity.name === activityName);
+        if (!activityExists) {
+          throw new Error('Activity not found');
+        }
+        // Filter out the activity with the matching name
+        itinerary.activities = itinerary.activities.filter((activity) => activity.name !== activityName);
+        // Save the updated itinerary
+        await itinerary.save();
+        return itinerary;
+      } catch (err) {
+        throw new Error('Error deleting activity: ' + err.message);
+      }
+    },
+
     // Create a Stripe checkout session
     createCheckoutSession: async (parent, { userId }) => {
       const session = await stripe.checkout.sessions.create({

@@ -1,10 +1,27 @@
 import convertDateFormat from '../utils/formatDate';
-import { Box, Typography, List, Divider, Card, CardContent, CardActionArea } from '@mui/material';
+import { Box, Typography, List, Divider, Card, CardContent, CardActionArea, IconButton } from '@mui/material';
+import { DEL_SINGLE_ACTIVITY } from '../utils/mutations';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { red, grey } from '@mui/material/colors';
 
 const ItineraryList = ({ itineraries }) => {
   if (!itineraries) {
     return null;
   }
+
+  const onDeleteActivity = async (itineraryId, activityName) => {
+    try {
+      await deleteActivity({
+        variables: {
+          itineraryId,
+          activityName,
+        },
+      });
+      setIsDeleted(true); // Trigger the cache clear and refetch
+    } catch (err) {
+      console.error('Error deleting activity:', err);
+    }
+  };
 
   // Destructure itinerary details
   const { city, date, time_frame, activities, dining_options } = itineraries;
@@ -69,6 +86,10 @@ const ItineraryList = ({ itineraries }) => {
                       </Typography>
                     )}
                   </CardContent>
+                  <IconButton aria-label="delete-activity" onClick={() => onDeleteActivity(activity.name)} sx={{ color: red[500] }}>
+                    {' '}
+                    <DeleteIcon />
+                  </IconButton>
                 </CardActionArea>
               </Card>
             ))}
