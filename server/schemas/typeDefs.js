@@ -22,14 +22,17 @@ const typeDefs = gql`
     description: String
     address: String
     link: String
+    website: String
   }
   # Define the DiningOption type
   type DiningOption {
     name: String
     description: String
+    rating: String
     address: String
     phone: String
     link: String
+    website: String
   }
   # Define the Itinerary type
   type Itinerary {

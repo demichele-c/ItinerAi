@@ -40,7 +40,16 @@ const ItineraryList = ({ itineraries }) => {
                 <CardActionArea>
                   <CardContent>
                     <Typography variant="h6" color="primary">
-                      {activity.name}
+                      <a
+                        href={activity.website && activity.website !== 'N/A' ? activity.website : '#dining-options'}
+                        target={activity.website && activity.website !== 'N/A' ? '_blank' : '_self'}
+                        rel={activity.website && activity.website !== 'N/A' ? 'noopener noreferrer' : undefined}
+                        style={{ color: '#1976d2', textDecoration: 'none' }}
+                        onMouseEnter={(e) => (e.target.style.color = '#1565c0')}
+                        onMouseLeave={(e) => (e.target.style.color = '#1976d2')}
+                      >
+                        {activity.name}
+                      </a>
                     </Typography>
                     <Typography variant="subtitle2" color="textSecondary" gutterBottom>
                       {activity.time_frame}
@@ -49,7 +58,7 @@ const ItineraryList = ({ itineraries }) => {
                       {activity.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Address: {activity.address}
+                      {activity.address && activity.address !== "N/A" ? `Address: ${activity.address}` : <></>}
                     </Typography>
                     {activity.link && activity.link !== 'N/A' && (
                       <Typography component="div" variant="body2" sx={{ mt: 1 }}>
@@ -68,14 +77,29 @@ const ItineraryList = ({ itineraries }) => {
       {/* Dining Options */}
       {dining_options && dining_options.length > 0 && (
         <>
-          <Typography variant="h5" gutterBottom>
+          <Typography id="dining-options" variant="h5" gutterBottom>
             Dining Options
           </Typography>
           {dining_options.map((restaurant, index) => (
             <Card key={index} sx={{ mb: 3, boxShadow: 3, borderRadius: 2 }}>
               <CardContent>
                 <Typography variant="h6" color="primary">
-                  {restaurant.name}
+                  <a
+                    href={restaurant.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: '#1976d2',
+                      textDecoration: 'none',
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = '#1565c0')}
+                    onMouseLeave={(e) => (e.target.style.color = '#1976d2')}
+                  >
+                    {restaurant.name}
+                  </a>
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                  {restaurant.rating}
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   {restaurant.description}
