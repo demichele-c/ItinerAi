@@ -64,6 +64,7 @@ const typeDefs = gql`
   }
   # Define the Mutation type
   type Mutation {
+    deleteActivity(itineraryId: ID!, activityName: String!): Itinerary
     addProfile(username: String!, email: String!, password: String!, name: String!): Auth
     login(email: String!, password: String!): Auth
     createCheckoutSession(userId: ID!): CheckoutSession
@@ -80,4 +81,5 @@ const typeDefs = gql`
     deleteItinerary(id: ID!): User
   }
 `;
+
 module.exports = typeDefs;

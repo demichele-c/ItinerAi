@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { SAVED_ITINERARIES } from '../utils/queries';
-import { DEL_SINGLE_ITINERARY } from '../utils/mutations';
+import { DEL_SINGLE_ITINERARY, DEL_SINGLE_ACTIVITY } from '../utils/mutations';
 import { useState, useEffect } from 'react';
 import {
   Container,
@@ -26,6 +26,8 @@ const SavedItineraries = () => {
   const { loading, data, refetch } = useQuery(SAVED_ITINERARIES);
   const itineraries = data?.myItineraries || [];
   const [deleteItinerary] = useMutation(DEL_SINGLE_ITINERARY);
+  const [deleteActivity, { loading: deleteLoading, error: deleteError }] = useMutation(DEL_SINGLE_ACTIVITY);
+
   const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
@@ -56,6 +58,20 @@ const SavedItineraries = () => {
     }
   };
 
+  const handleDeleteActivity = async (itineraryId, activityName) => {
+    try {
+      await deleteActivity({
+        variables: {
+          itineraryId,
+          activityName,
+        },
+      });
+      setIsDeleted(true); // Trigger the cache clear and refetch
+    } catch (err) {
+      console.error('Error deleting activity:', err);
+    }
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -81,10 +97,7 @@ const SavedItineraries = () => {
           },
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}
-        >
+        <Typography variant="h4" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}>
           Saved Itineraries
         </Typography>
       </Paper>
@@ -114,10 +127,7 @@ const SavedItineraries = () => {
               },
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{ width: '33%', flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}
-            >
+            <Typography variant="h6" sx={{ width: '33%', flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}>
               {itinerary.city}
             </Typography>
             <Typography
@@ -137,11 +147,7 @@ const SavedItineraries = () => {
           </AccordionDetails>
           <AccordionActions>
             <Box sx={{ marginLeft: 'auto' }}>
-              <IconButton
-                aria-label="delete"
-                onClick={() => handleDeleteItinerary(itinerary.id)}
-                sx={{ color: red[500] }}
-              >
+              <IconButton aria-label="delete" onClick={() => handleDeleteItinerary(itinerary.id)} sx={{ color: red[500] }}>
                 <DeleteIcon />
               </IconButton>
             </Box>

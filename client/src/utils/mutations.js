@@ -72,3 +72,14 @@ export const DEL_SINGLE_ITINERARY = gql`
     }
   }
 `;
+
+export const DEL_SINGLE_ACTIVITY = gql`
+  mutation DeleteActivity($itineraryId: ID!, $activityName: String!) {
+    deleteActivity(itineraryId: $itineraryId, activityName: $activityName) {
+      activities {
+        name
+        description
+      }
+    }
+  }
+`;
