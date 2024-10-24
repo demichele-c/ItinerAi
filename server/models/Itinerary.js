@@ -24,6 +24,7 @@ const itinerarySchema = new Schema({
   },
   city: String,
   date: String,
+  icon: String,
   time_frame: String,
   celebration: String,
   activities: [activitySchema],

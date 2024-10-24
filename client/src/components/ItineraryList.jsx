@@ -24,14 +24,14 @@ const ItineraryList = ({ itineraries }) => {
   };
 
   // Destructure itinerary details
-  const { city, date, time_frame, activities, dining_options } = itineraries;
+  const { city, date, icon, time_frame, activities, dining_options } = itineraries;
   const newDate = convertDateFormat(date);
 
   return (
     <Box sx={{ p: 3 }}>
       {/* Itinerary Details */}
       <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-        Itinerary for {city}
+        Itinerary for {city}{icon}
       </Typography>
       {date && date !== 'N/A' && (
         <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center' }}>

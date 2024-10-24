@@ -128,14 +128,15 @@ const resolvers = {
       const response = await openai.chat.completions.create({
         model: process.env.OPENAI_MODEL,
         temperature: 0.2,
-        max_tokens: 1500,
+        max_tokens: 1600,
         messages: [
           {
             role: 'system',
-            content: `Please return a detailed itinerary in JSON format but exclude the JSON syntax. Ensure the response is valid JSON.
+            content: `Please return a detailed itinerary in JSON format but exclude the json\n. Ensure the response is valid JSON.
 
 The JSON should include the following keys:
 - "city": The name of the city.
+- "icon": A emoji representing the city.
 - "date": The planned date for the itinerary.
 - "time_frame": The specified time frame for the activities and dining.
 - "interests": The user's interests.
@@ -177,7 +178,7 @@ User Inputs:
 - I am in ${itLocation} and I'm looking for places to have a ${itFoodPreferences} meal. If the time range ${itTimeRange} is greater than 5 hours, please include a second ${itSecondFoodPreference} meal.
 - I'm interested in a ${itCelebration} dining experience on ${itDate} ${itTimeRange}.
 - Additionally, my interests include ${itInterests}.
-- Please provide a detailed itinerary including four dining options and a list of activities based on my ${itInterests} and ${itCelebration} on ${itDate}.`,
+- Please provide a detailed itinerary including four dining options that are real restaurants and a list of activities based on my ${itInterests} and ${itCelebration} on ${itDate}.`,
           },
         ],
       });
@@ -192,6 +193,7 @@ User Inputs:
           user: user._id,
           city: parsedMessage.city || 'N/A',
           date: parsedMessage.date || 'N/A',
+          icon: parsedMessage.icon || 'N/A',
           time_frame: parsedMessage.time_frame || 'N/A',
           celebration: parsedMessage.celebration || 'N/A',
           activities: parsedMessage.activities || [],

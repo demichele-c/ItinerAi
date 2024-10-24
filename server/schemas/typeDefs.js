@@ -40,6 +40,7 @@ const typeDefs = gql`
     activities: [Activity]!
     celebration: String
     city: String
+    icon: String
     date: String
     dining_options: [DiningOption]!
     time_frame: String

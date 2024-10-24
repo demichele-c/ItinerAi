@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../utils/auth.js';
 import { TextField, Button, Box, MenuItem, Slider, Typography } from '@mui/material';
+
 // Function to convert slider value to time in 12-hour format
 const formatTime = (value) => {
   const hour = value % 24;
@@ -10,6 +11,7 @@ const formatTime = (value) => {
   const suffix = isAM ? 'AM' : 'PM';
   return `${formattedHour}:00 ${suffix}`;
 };
+
 const UserInputForm = () => {
   // Initialize the navigate hook
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const UserInputForm = () => {
   const [secondFoodPreference, setSecondFoodPreference] = useState('Mexican');
   const [timeRange, setTimeRange] = useState([10, 20]); // Time range from 12 AM to 12 AM next day
   const [error, setError] = useState('');
+
   // Check if the time range exceeds 5 hours
   const timeRangeExceedsFiveHours = timeRange[1] - timeRange[0] > 5;
 
@@ -48,8 +51,25 @@ const UserInputForm = () => {
       },
     });
   };
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
+      {/* Time Range Slider */}
+      <Typography gutterBottom>Date Time Frame</Typography>
+      <Slider
+        value={timeRange}
+        onChange={(e, newValue) => setTimeRange(newValue)}
+        valueLabelDisplay="auto"
+        min={0}
+        max={24}
+        step={1}
+        marks
+        valueLabelFormat={formatTime}
+      />
+      <Typography>
+        From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
+      </Typography>
+
       <TextField
         label="Location (City, State)"
         value={location}
@@ -176,21 +196,6 @@ const UserInputForm = () => {
           <MenuItem value="Burgers">Burgers</MenuItem>
         </TextField>
       )}
-      {/* Time Range Slider */}
-      <Typography gutterBottom>Date Time Frame</Typography>
-      <Slider
-        value={timeRange}
-        onChange={(e, newValue) => setTimeRange(newValue)}
-        valueLabelDisplay="auto"
-        min={0}
-        max={24}
-        step={1}
-        marks
-        valueLabelFormat={formatTime}
-      />
-      <Typography>
-        From {formatTime(timeRange[0])} to {formatTime(timeRange[1])}
-      </Typography>
       {/* Submit Button */}
       {AuthService.loggedIn() ? (
         <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 3 }}>

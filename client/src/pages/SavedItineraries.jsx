@@ -9,10 +9,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   AccordionActions,
-  Card,
-  CardContent,
   IconButton,
-  Grid,
   Box,
   Paper,
 } from '@mui/material';
@@ -37,7 +34,6 @@ const SavedItineraries = () => {
     }
   }, [data, loading, refetch]);
 
-  // Effect to clear cache when an itinerary is deleted
   useEffect(() => {
     if (isDeleted) {
       client.clearStore().then(() => {
@@ -121,19 +117,25 @@ const SavedItineraries = () => {
               borderRadius: 2,
               '& .MuiAccordionSummary-content': {
                 alignItems: 'center',
+                display: 'flex',
               },
               '&:hover': {
                 backgroundColor: grey[400],
               },
             }}
           >
-            <Typography variant="h6" sx={{ width: '33%', flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}>
+            {itinerary.icon && (
+              <Box component="span" sx={{ mr: 1, fontSize: '1.5rem' }}>
+                {itinerary.icon} {/* Display the emoji or icon here */}
+              </Box>
+            )}
+            <Typography variant="h6" sx={{ flexShrink: 0, fontFamily: 'Roboto, sans-serif' }}>
               {itinerary.city}
             </Typography>
             <Typography
               variant="h6"
               sx={{
-                width: '60%',
+                marginLeft: 'auto',
                 flexShrink: 0,
                 fontFamily: 'Roboto, sans-serif',
                 color: 'text.secondary',
@@ -147,7 +149,11 @@ const SavedItineraries = () => {
           </AccordionDetails>
           <AccordionActions>
             <Box sx={{ marginLeft: 'auto' }}>
-              <IconButton aria-label="delete" onClick={() => handleDeleteItinerary(itinerary.id)} sx={{ color: red[500] }}>
+              <IconButton
+                aria-label="delete"
+                onClick={() => handleDeleteItinerary(itinerary.id)}
+                sx={{ color: red[500] }}
+              >
                 <DeleteIcon />
               </IconButton>
             </Box>

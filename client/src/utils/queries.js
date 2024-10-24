@@ -26,6 +26,7 @@ export const SAVED_ITINERARIES = gql`
       city
       date
       id
+      icon
       time_frame
       activities {
         time_frame
