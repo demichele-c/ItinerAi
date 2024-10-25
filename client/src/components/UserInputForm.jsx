@@ -49,7 +49,7 @@ const UserInputForm = () => {
     });
   };
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
+    <Box component="form" border={1} onSubmit={handleSubmit} sx={{ p: 3, boxShadow: 2, borderRadius: 2, maxWidth: 500, mx: 'auto', mt: 5 }}>
       <TextField
         label="Location (City, State)"
         value={location}

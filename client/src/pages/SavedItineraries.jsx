@@ -88,8 +88,9 @@ const SavedItineraries = () => {
         elevation={3}
         sx={{
           padding: 2,
+          marginTop: 3,
           marginBottom: 3,
-          backgroundColor: grey[100],
+          backgroundColor: '#f5f5f5',
           borderRadius: 2,
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
           '&:hover': {
@@ -97,7 +98,7 @@ const SavedItineraries = () => {
           },
         }}
       >
-        <Typography variant="h4" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ color: '#000000', fontFamily: 'Roboto, sans-serif', fontWeight: 600, textAlign: 'center' }}>
           Saved Itineraries
         </Typography>
       </Paper>
