@@ -48,9 +48,9 @@ function App() {
       <ThemeProvider theme={Theme}>
       <CssBaseline>
       {/* end theme insert */}
-      <div>
+      <div id="pageContainer">
         <Header />
-        <div>
+        <div id="pageContent">
           <Outlet />
         </div>
         <Footer />

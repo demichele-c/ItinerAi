@@ -58,9 +58,18 @@ body {
   padding-right: 8px;
 }
 
-#footer {
+#pageContainer {
   position: relative;
+  min-height: 100vh;
+}
+
+#pageContent {
+  padding-bottom: 2.5rem;
+}
+
+#footer {
+  position: absolute;
   top: auto;
   bottom: 0;
-  margin-top: 1.5rem;
+  /* margin-top: 2.5rem; */
 }

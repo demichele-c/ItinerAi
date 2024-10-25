@@ -4,7 +4,7 @@ import UserInputForm from '../components/UserInputForm'; // Import the form
 const Home = () => {
   return (
     <Container>
-      <Box sx={{ textAlign: 'center', marginTop: 10 }}>
+      <Box sx={{ textAlign: 'center', marginTop: 10}}>
         <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold', color: '#1976d2' }} gutterBottom>
           Welcome to ItinerAi
         </Typography>
@@ -13,7 +13,7 @@ const Home = () => {
         </Typography>
 
         {/* Render UserInputForm */}
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4}}>
           <UserInputForm />
         </Box>
       </Box>
