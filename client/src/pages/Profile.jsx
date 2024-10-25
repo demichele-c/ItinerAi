@@ -66,10 +66,10 @@ const Profile = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, p: 3, boxShadow: 2, borderRadius: 2, backgroundColor: '#f5f5f5' }}>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h4" align="center" gutterBottom sx={{color: '#000000'}}>
           {user?.username ? `${user.username}'s Profile` : 'Your Profile'}
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" gutterBottom sx={{color: '#000000'}}>
           <strong>Name:</strong> {user?.username || 'Name not available'}
         </Typography>
       </Box>

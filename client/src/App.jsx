@@ -8,7 +8,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Header from './components/Header';
-// import Footer from './components/Footer';
+import Footer from './components/Footer';
 
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -48,11 +48,12 @@ function App() {
       <ThemeProvider theme={Theme}>
       <CssBaseline>
       {/* end theme insert */}
-      <div>
+      <div id="pageContainer">
         <Header />
-        <div>
+        <div id="pageContent">
           <Outlet />
         </div>
+        <Footer />
       </div>
       </CssBaseline>
       </ThemeProvider>
